@@ -1,0 +1,93 @@
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-box {
+  background-color: #fff;
+  padding: 30px;
+  width: 40%;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  border: 2px solid white;
+  background: transparent;
+  backdrop-filter: blur(8px);
+  text-align: right;
+}
+.form-label strong{
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.form-title {
+  text-align: center;
+  margin-bottom: 30px;
+  color: rgb(9, 5, 1);
+}
+/* input fields */
+.form-input {
+  width: 100%;
+  height: 40px;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.form-input:focus {
+  outline: none;
+  box-shadow: 0px 0px 2px 1px #96b8dc;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-family: cursive;
+  color: rgb(9, 5, 1);
+}
+/* buttons */
+.form-button {
+  /* Apply the width to both buttons */
+  /* Add styling for link buttons */
+  width: 100%;
+  height: 40px;
+  background-color: #042e5e;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: none;
+  align-content: center;
+  align-items: center;
+  display: inline-block; /* Ensure link button is inline */
+  margin-top: 10px; /* Add margin to separate buttons */
+  text-align: center;
+}
+/* button hover */
+.form-button:hover {
+  background-color: rgb(244, 184, 128);
+}
+/* error message */
+.form-error {
+  display: block;
+  margin-top: 5px;
+  font-size: 14px;
+  color: #5f0710;
+  font-weight: bolder;
+}
+.form-control {
+  border-radius: 20px;
+  text-align: right;
+}
+.rg {
+  font-family: monospace;
+  color: black;
+  font-weight: bolder;
+}
+.mb {
+  margin-bottom: 10px;
+}

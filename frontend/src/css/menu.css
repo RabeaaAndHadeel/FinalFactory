@@ -1,0 +1,89 @@
+/* Ensure the sidebar takes full height */
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  background: linear-gradient(to bottom, #3a3a3a, #2c2c2c);
+  color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  z-index: 1000;
+}
+
+/* Sidebar header styling */
+.sidebarHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.h1 {
+  margin: 0;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Profile image styling */
+.profileImage {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+/* Menu sections */
+.sectionTitle {
+  width: 100%;
+  font-size: 0.9rem;
+  color: #bbb;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-align: left;
+  padding-left: 10px;
+}
+
+/* Menu item styling */
+.menuItem {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-decoration: none;
+  margin-bottom: 5px;
+}
+
+.menuItem:hover {
+  background-color: #444;
+}
+
+.menuItem .icon {
+  margin-right: 10px;
+}
+
+.menuItem .label {
+  flex-grow: 1;
+}
+
+.menuItem .badge {
+  background-color: #e91e63;
+  color: white;
+  padding: 3px 6px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+}
+
+/* Hide the dropdown menu */
+.hidden {
+  display: none;
+}
