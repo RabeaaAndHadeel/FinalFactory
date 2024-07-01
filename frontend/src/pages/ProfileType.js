@@ -1,18 +1,17 @@
 import React from "react";
-import Header from "../components/header/Header";
-import Profile from "../js/Profile/Profile";
+import Profile from "../js/Profile";
 import Footer from "../components/footer/Footer";
-import SearchBar from "../js/searchBar/SearchBar";
-
+import SiderBar from "../components/sideBar/SideBar";
 function ProfileType() {
   return (
     <div>
-      {/* Header component */}
-      <Header />
+      {/* SiderBar component */}
+      <SiderBar />
       {/* Profile component */}
       <Profile />
       {/* Footer component with names */}
-      <Footer name="הר-אל" />
+      <Footer  />
+ 
     </div>
   );
 }

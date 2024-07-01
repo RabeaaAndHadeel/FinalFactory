@@ -1,5 +1,4 @@
 //Hadeel and Rabeaa
-const path = require("path");
 
 const express = require("express");
 
@@ -20,11 +19,11 @@ router.get("/customer", (req, res) => {
 });
 // Route to create a new customers
 router.post("/createCustomer", (req, res) => {
-  let { id, name, family, phoneNumber, mail, address } = req.body;
+  let { id, name, family, phoneNumber, email, address } = req.body;
 
   db.query(
-    "INSERT INTO `customers`(`id`, `name`, `family`,`phoneNumber`,`mail`,`address`) VALUES (?,?,?,?,?,?)",
-    [id, name, family, phoneNumber, mail, address],
+    "INSERT INTO `customers`(`id`, `name`, `family`,`phoneNumber`,`email`,`address`) VALUES (?,?,?,?,?,?)",
+    [id, name, family, phoneNumber, email, address],
     (err, result) => {
       if (err) {
         console.log(err);
@@ -35,25 +34,16 @@ router.post("/createCustomer", (req, res) => {
   );
 });
 
-// Route to delete a customer by id
-router.delete("/customer/:id", (req, res) => {
-  const sql = "DELETE FROM `customers` WHERE id = ?";
-  const type = req.params.id;
-  db.query(sql, [type], (err, data) => {
-    if (err) return res.json("Error");
-    return res.json(data);
-  });
-});
 
 // Route to update a customer by id
-router.put("/updateCustomer/:id", (req, res) => {
+router.put("/customer/:id", (req, res) => {
   const sql =
-    "UPDATE `customers` SET `name`=?,`family`=?,`phoneNumber`=?,`mail`=?,`address`=? WHERE id = ?";
+    "UPDATE `customers` SET `name`=?,`family`=?,`phoneNumber`=?,`email`=?,`address`=? WHERE id = ?";
   const values = [
     req.body.name,
     req.body.family,
     req.body.phoneNumber,
-    req.body.mail,
+    req.body.email,
     req.body.address,
   ];
   const type = req.params.id;

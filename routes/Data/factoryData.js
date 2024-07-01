@@ -1,5 +1,5 @@
 const express = require("express");
-const factoryService = require("./factoryService"); // Adjust the path as necessary
+const factoryService = require("../Service/factoryService"); // Adjust the path as necessary
 const router = express.Router();
 
 // Route to fetch all factories

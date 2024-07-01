@@ -6,8 +6,8 @@ const db = require("../dbcon"); // dbcon is a module for database connection
 const router = express.Router();
 
 // Route to fetch all orders
-router.get("/order", (req, res) => {
-  const q = "SELECT * FROM`orders`";
+router.get("/bid", (req, res) => {
+  const q = "SELECT * FROM`bid`";
   db.query(q, (err, data) => {
     if (err) {
       console.log(err);
@@ -17,12 +17,22 @@ router.get("/order", (req, res) => {
   });
 });
 // Route to create a new orders
-router.post("/createOrder", (req, res) => {
-  let { orderNumber, type, count } = req.body;
+router.post("/createBid", (req, res) => {
+  let { number, 
+    customersId, 
+    profileType, 
+    VAT, 
+    total, 
+    date } = req.body;
 
   db.query(
-    "INSERT INTO `orders`(`count`, `profileType`, `customersId`, `orderNumber` ) VALUES (?,?,?,?)",
-    [orderNumber, customersId,profileType, count],
+    "INSERT INTO `bid`(`number`, `profileType`, `customersId`, `VAT`, `total`, `date` ) VALUES (?,?,?,?,?,?)",
+    [ number, 
+    customersId, 
+    profileType, 
+    VAT, 
+    total, 
+    date],
     (err, result) => {
       if (err) {
         console.log(err);
@@ -34,9 +44,9 @@ router.post("/createOrder", (req, res) => {
 });
 
 // Route to delete a order by orderNumber
-router.delete("/order/:orderNumber", (req, res) => {
-  const sql = "DELETE FROM `orders` WHERE orderNumber = ?";
-  const type = req.params.orderNumber;
+router.delete("/bid/:number", (req, res) => {
+  const sql = "DELETE FROM `bid` WHERE number = ?";
+  const type = req.params.number;
   db.query(sql, [type], (err, data) => {
     if (err) return res.json("Error");
     return res.json(data);
@@ -44,10 +54,10 @@ router.delete("/order/:orderNumber", (req, res) => {
 });
 
 // Route to update an order by orderNumber
-router.put("/updateOrder/:orderNumber", (req, res) => {
-  const sql = "UPDATE `orders` SET `type`=?,`count`=? WHERE orderNumber = ?";
-  const values = [req.body.type, req.body.count];
-  const type = req.params.orderNumber;
+router.put("/updateBid/:number", (req, res) => {
+  const sql = "UPDATE `bid` SET `profileType` =?, `customersId`=?, `VAT`=?, `total`=?, `date`=? WHERE number = ?";
+  const values = [req.body.profileType, req.body.customersId, req.body.VAT, req.body.total, req.body.date];
+  const type = req.params.number;
   db.query(sql, [...values, type], (err, data) => {
     if (err) return res.json("Error");
     return res.json(data); // Return result of the update operation

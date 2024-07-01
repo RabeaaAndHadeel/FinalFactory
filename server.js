@@ -11,13 +11,14 @@ const order = require("./routes/order"); //the  order route path
 const customer = require("./routes/customer"); //the  customer route path
 const product = require("./routes/product"); //the  customer route path
 const factory = require("./routes/Data/factoryData"); //the  factory route path
-const search = require("./routes/search"); //the search route path
-const searchFoam = require("./routes/searchFoam"); //the  foam search route path
-const searchGlass = require("./routes/searchGlass"); //the glass search route path
-const searchOrder = require("./routes/searchOrder"); //the glass search route path
-const searchProduct = require("./routes/searchProduct"); //the glass search route path
-const searchCustomers = require("./routes/searchCustomers"); //the glass search route path
-const searchSuppliers=require("./routes/searchSupplier")
+const search = require("./routes/search/search"); //the search route path
+const searchFoam = require("./routes/search/searchFoam"); //the  foam search route path
+const searchGlass = require("./routes/search/searchGlass"); //the glass search route path
+const searchOrder = require("./routes/search/searchOrder"); //the glass search route path
+const searchProduct = require("./routes/search/searchProduct"); //the glass search route path
+const searchCustomers = require("./routes/search/searchCustomers"); //the glass search route path
+const searchSuppliers=require("./routes/search/searchSupplier")
+const bid = require("./routes/bid");
 const port = process.env.PORT || 3000;
 // Creating an Express application
 const app = express();
@@ -44,6 +45,7 @@ app.use(searchProduct); //using the product search router
 app.use(searchCustomers); //using the customer search route
 app.use(searchSuppliers); //using the supplier search route
 app.use(factory); //using  the factory router
+app.use(bid); //using  the bid router
 
 // if url is not found:
 app.use((req, res, next) => {

@@ -1,0 +1,90 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tablef {
+  flex: 1;
+  margin-right: 25%;
+  margin-left: 5%;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.table {
+  width: 100%;
+}
+
+.table th,
+.table td {
+  text-align: center;
+  vertical-align: middle;
+  padding: 10px;
+}
+
+.table th {
+  background-color: #f8f9fa;
+}
+
+.table td {
+  background-color: #ffffff;
+}
+
+.table input {
+  width: 100%;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.rightAlign {
+  text-align: right;
+}
+
+.active {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: white;
+}
+
+.active:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+
+.inactive {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: white;
+}
+
+.inactive:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+.successInactive {
+  background-color: white;
+  border-color: #28a745;
+  color: #28a745;
+}
+
+.successInactive:hover {
+  background-color: #28a745;
+  color: white;
+}
+
+.dangerActive {
+  background-color: white;
+  border-color: #dc3545;
+  color: #dc3545;
+}
+
+.dangerActive:hover {
+  background-color: #dc3545;
+  color: white;
+}

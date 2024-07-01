@@ -1,11 +1,11 @@
 import React from "react";
-import Factory from '../js/factory';
-import Header from "../components/header/HeaderHome";
+import SideBar from "../components/sideBar/SideBar";
+import Factory from '../js/Factory';
 import Footer from "../components/footer/Footer";
 function FactoryData(){
   return (
     <div   >
-      <Header/>
+      <SideBar/>
       <Factory />
       <Footer/>
     </div>

@@ -82,6 +82,11 @@ body {
   font-weight: bold;
 }
 
+.main-content {
+  margin-right: 220px; /* Adjust this value based on the width of the sidebar */
+  margin-left: 0; /* Remove any left margin */
+  padding: 20px;
+}
 
 
 

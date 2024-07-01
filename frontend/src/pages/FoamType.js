@@ -1,13 +1,12 @@
 import React from "react";
-import Header from "../components/header/Header";
-import Foam from "../js/foam/Foam";
+import SideBar from "../components/sideBar/SideBar";
+import Foam from "../js/Foam";
 import Footer from "../components/footer/Footer";
 
 function FoamType() {
   return (
     <div>
-      {/* Header component */}
-      <Header />
+      <SideBar/>
       {/* Profile component */}
       <Foam />
       {/* Footer component with names */}

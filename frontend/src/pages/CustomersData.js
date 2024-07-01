@@ -1,16 +1,15 @@
 import React from "react";
-import Header from "../components/header/Header";
-import Customer from "../js/customer/Customer";
+import SideBar from "../components/sideBar/SideBar";
+import Customer from "../js/Customer";
 import Footer from "../components/footer/Footer";
 function CustomersData() {
   return (
     <div>
-      {/* Header component */}
-      <Header />
+      <SideBar/>
       {/* customer component */}
       <Customer />
       {/* Footer component with factory name */}
-      <Footer name="הר-אל" />
+      <Footer  />
     </div>
   );
 }

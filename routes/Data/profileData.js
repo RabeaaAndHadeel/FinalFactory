@@ -24,17 +24,6 @@ router.post("/profile", async (req, res) => {
   }
 });
 
-// Route to delete a profile by ID
-router.delete("/profile/:id", async (req, res) => {
-  try {
-    const result = await profileService.deleteProfileById(req.params.id);
-    res.json(result);
-  } catch (err) {
-    console.log(err);
-    res.json("Error");
-  }
-});
-
 // Route to update a profile by ID
 router.put("/profile/:id", async (req, res) => {
   try {
@@ -45,5 +34,29 @@ router.put("/profile/:id", async (req, res) => {
     res.json("Error");
   }
 });
+// Route to move selected profiles to profile_not_active and delete them from profile
+router.post("/profile/move", async (req, res) => {
+  try {
+    const { ids } = req.body;
+    const result = await profileService.moveProfilesToNotActive(ids);
+    res.json(result);
+  } catch (err) {
+    console.log(err);
+    res.json("Error");
+  }
+});
+
+// Route to delete selected profiles by IDs
+router.delete("/profile", async (req, res) => {
+  try {
+    const { ids } = req.body;
+    const result = await profileService.deleteProfilesByIds(ids);
+    res.json(result);
+  } catch (err) {
+    console.log(err);
+    res.json("Error");
+  }
+});
+
 
 module.exports = router;

@@ -1,12 +1,11 @@
 import React from "react";
-import Header from "../components/header/Header";
-import Supplier from "../js/suppliers/Supplier";
+import SideBar from "../components/sideBar/SideBar";
+import Supplier from "../js/Supplier";
 import Footer from "../components/footer/Footer";
 function SupplierData() {
   return (
     <div>
-      {/* Header component */}
-      <Header />
+      <SideBar/>
       {/* Profile component */}
       <Supplier />
       {/* Footer component with names */}

@@ -1,13 +1,13 @@
 import React from "react";
-import Header from "../components/header/HeaderHome";
 import Footer from "../components/footer/Footer";
 import Data from "../js/Data";
+import SideBar from "../components/sideBar/SideBar";
+
 
 function Contactus() {
   return (
     <div>
-      {/* Header component */}
-      <Header />
+      <SideBar/>
       {/* Data component */}
       <Data />
       {/* footer component */}

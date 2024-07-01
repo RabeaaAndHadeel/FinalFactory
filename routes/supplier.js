@@ -19,11 +19,11 @@ router.get("/supplier", (req, res) => {
 
 // Route to create a new supplier
 router.post("/createSupplier", (req, res) => {
-  const { name, id, address, contact, mail, phone } = req.body;
+  const { name, id, address, contact, email, phone } = req.body;
 
   const sql =
-    "INSERT INTO `suppliers` (name, id, address, contact, mail, phone) VALUES (?, ?, ?, ?, ?, ?)";
-  db.query(sql, [name, id, address, contact, mail, phone], (err, result) => {
+    "INSERT INTO `suppliers` (name, id, address, contact, email, phone) VALUES (?, ?, ?, ?, ?, ?)";
+  db.query(sql, [name, id, address, contact, email, phone], (err, result) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: "Failed to create supplier" });
@@ -52,11 +52,11 @@ router.delete("/supplier/:id", (req, res) => {
 // Route to update a profile by id
 router.put("/updateSupplier/:id", (req, res) => {
   const sql =
-    "UPDATE `suppliers` SET name = ?, address = ?, contact = ?, mail = ?, phone = ? WHERE id = ?";
-  const { name, address, contact, mail, phone } = req.body;
+    "UPDATE `suppliers` SET name = ?, address = ?, contact = ?, email = ?, phone = ? WHERE id = ?";
+  const { name, address, contact, email, phone } = req.body;
   const id = req.params.id;
 
-  db.query(sql, [name, address, contact, mail, phone, id], (err, data) => {
+  db.query(sql, [name, address, contact, email, phone, id], (err, data) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: "Failed to update supplier" });

@@ -1,13 +1,12 @@
 import React from "react";
-import Header from "../components/header/Header";
-import Product from "../js/product/Product";
+import SideBar from "../components/sideBar/SideBar";
+import Product from "../js/Product";
 import Footer from "../components/footer/Footer";
 
 function ProductData() {
   return (
     <div>
-      {/* Header component */}
-      <Header />
+      <SideBar/>
       {/* order component */}
       <Product />
       {/* Footer component with factory name */}
