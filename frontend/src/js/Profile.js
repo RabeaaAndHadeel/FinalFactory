@@ -5,6 +5,7 @@ import editIcon from '../img/icon/edit.png';
 import saveIcon from '../img/icon/save.png';
 import closeIcon from '../img/icon/close.png';
 import addIcon from '../img/icon/add.png';
+import Switch from "react-switch";
 import classes from '../css/table.module.css';
 
 const Profile = () => {
@@ -58,28 +59,20 @@ const Profile = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  const handleMoveToNotActive = async () => {
-  try {
-    const ids = selectedRows;
-    // Move selected profiles to profile_not_active
-    await axios.post('/profile/move', { ids });
 
-    // Delete selected profiles from profile
-    await axios.delete('/profile', { data: { ids } });
-
-    // Update the profiles state by removing the moved profiles
-    setProfiles(profiles.filter(profile => !selectedRows.includes(profile.id)));
-    setSelectedRows([]);
-  } catch (err) {
-    console.log(err);
-  }
-  };
-  
   const handleSelectRow = (id) => {
     if (selectedRows.includes(id)) {
       setSelectedRows(selectedRows.filter(rowId => rowId !== id));
     } else {
       setSelectedRows([...selectedRows, id]);
+    }
+  };
+
+  const handleSelectAllRows = (checked) => {
+    if (checked) {
+      setSelectedRows(profiles.map(profile => profile.id));
+    } else {
+      setSelectedRows([]);
     }
   };
 
@@ -102,12 +95,9 @@ const Profile = () => {
   <div className={classes.container}>
     <div className={classes.tablef}>
       <h2 className="w-100 d-flex justify-content-center p-3">פרופיל</h2>
-      <div className="d-flex justify-content-between mb-3">
+      <div className="d-flex justify-content-between mb3">
         <button className="btn btn-primary" onClick={handleAddProfile}>
           <img src={addIcon} alt="Add" className={classes.icon} /> הוספת פרופיל
-        </button>
-        <button className="btn btn-secondary" onClick={handleMoveToNotActive}>
-          Move to Not Active
         </button>
         <SearchBar searchVal={search} setSearchVal={setSearch} />
       </div>
@@ -115,16 +105,13 @@ const Profile = () => {
         <thead>
           <tr>
             <th>
-              <input
-                type="checkbox"
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    setSelectedRows(profiles.map(profile => profile.id));
-                  } else {
-                    setSelectedRows([]);
-                  }
-                }}
+              <Switch
+                onChange={handleSelectAllRows}
                 checked={selectedRows.length === profiles.length}
+                checkedIcon={false}
+                uncheckedIcon={false}
+                onColor="#FF0000"
+                offColor="#059212"
               />
             </th>
             <th>פעולות</th>
@@ -137,10 +124,13 @@ const Profile = () => {
           {currentRows.map((data, i) => (
             <tr key={i}>
               <td>
-                <input
-                  type="checkbox"
-                  checked={selectedRows.includes(data.id)}
+                <Switch
                   onChange={() => handleSelectRow(data.id)}
+                  checked={selectedRows.includes(data.id)}
+                  checkedIcon={false}
+                  uncheckedIcon={false}
+                  onColor="#FF0000"
+                  offColor="#059212"
                 />
               </td>
               <td>

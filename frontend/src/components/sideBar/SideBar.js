@@ -263,16 +263,17 @@ function SideBar() {
             {isActiveOrderOpen && (
               <ul className="nav nav-pills flex-column p-0 m-0 ms-4">
                 <li className="nav-item p-1">
-                  <div
-                    className={`d-flex align-items-center nav-link text-dark ${classes.navLink}`}
-                  >
-                    <img
-                      src={activeIcon}
-                      alt="active"
-                      className={classes.icon}
-                    />
-                    <span className="fs-6 fw-bold"> הזמנות פעילות </span>
-                  </div>
+                   <Link
+                          to="/order"
+                          className={`d-flex align-items-center nav-link text-dark ${classes.navLink}`}
+                        >
+                          <img
+                            src={activeIcon}
+                            alt="active"
+                            className={classes.icon}
+                          />
+                        <span className="fs-6 fw-bold"> הזמנות פעילות </span>
+                    </Link>
                 </li>
                 <li className="nav-item p-1">
                   <div
