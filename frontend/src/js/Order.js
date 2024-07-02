@@ -55,7 +55,7 @@ const Order = () => {
   };
 
   const filteredOrders = orders.filter((order) =>
-    order.orderNumber.toString().includes(search)
+   (order.orderNumber || order.customersId ||order.supplierId ).toString().includes(search) 
   );
 
   const indexOfLastRow = currentPage * rowsPerPage;
@@ -83,6 +83,7 @@ const Order = () => {
             <tr>
               <th>כמות</th>
               <th>סוג מוצר</th>
+              <th> ח"פ ספק</th>
               <th>ת.ז לקוח</th>
               <th>מספר הזמנה</th>
             </tr>
@@ -90,21 +91,9 @@ const Order = () => {
           <tbody>
             {currentRows.map((order, index) => (
               <tr key={index}>
-                <td>
-                  {editingIndex === index ? (
-                    <input
-                      type="text"
-                      name="count"
-                      value={formData.count}
-                      onChange={handleChange}
-                      placeholder="כמות"
-                      className="form-control"
-                    />
-                  ) : (
-                    order.count
-                  )}
-                </td>
+                <td>{order.count}</td>
                 <td>{order.profileType}</td>
+                <td>{order.supplierId}</td>
                 <td>{order.customersId}</td>
                 <td>{order.orderNumber}</td>
               </tr>
@@ -132,6 +121,16 @@ const Order = () => {
                     value={formData.profileType}
                     onChange={handleChange}
                     placeholder="סוג מוצר"
+                    className="form-control"
+                  />
+                </td>
+                 <td>
+                  <input
+                    type="text"
+                    name="supplierId"
+                    value={formData.supplierId}
+                    onChange={handleChange}
+                    placeholder="ח'פ ספק"
                     className="form-control"
                   />
                 </td>
