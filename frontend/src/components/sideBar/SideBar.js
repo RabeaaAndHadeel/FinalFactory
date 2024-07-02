@@ -9,7 +9,7 @@ import supplier from "../../img/manufacture.png";
 import product from "../../img/product.png";
 import order from "../../img/Order.png";
 import logout from "../../img/logout.png";
-import bid from "../../img/icon/bid.png";
+import bid from "../../img/bid.png";
 import material from "../../img/icon/list.png";
 import settingsIcon from "../../img/icon/settings.png";
 import factoryData from "../../img/icon/factoryData.png";
