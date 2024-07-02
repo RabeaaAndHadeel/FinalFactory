@@ -2,7 +2,7 @@ function Validation(values) {
   let errors = {}; // Initialize an object to store validation errors
 
   // Regular expression to validate alphabetic characters only
-  const lettersPattern = /^[a-zA-Z]+$/;
+  const lettersPattern = /^[\u0590-\u05FF\s]+$/;
 
   // Check if the foam type field is empty
   if (!values.foamType) {

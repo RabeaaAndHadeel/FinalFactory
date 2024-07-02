@@ -1,6 +1,6 @@
 function OrderValidation(values) {
   let errors = {}; // Initialize an object to store validation errors
-
+  const typePattern = /^[\u0590-\u05FF\s]+$/;
   // Check if the count field is empty
   if (values.count === "") {
     errors.count = "כמות מוצר זה שדה חובה";
@@ -18,8 +18,11 @@ function OrderValidation(values) {
     errors.orderNumber =
       "  מספר הזמנה  לא  יכול להיות שלילי או יותר מ-3 מספרים  ";
   }
+  // Check if the type field is empty
   if (values.type === "") {
     errors.type = "סוג מוצר זה שדה חובה";
+  } else if (!typePattern.test(values.type)) {
+    errors.type = "סוג מוצר צריך להכיל רק אותיות";
   }
   return errors; // Return the errors object
 }

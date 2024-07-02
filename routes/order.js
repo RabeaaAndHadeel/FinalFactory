@@ -22,7 +22,7 @@ router.post("/createOrder", (req, res) => {
 
   db.query(
     "INSERT INTO `orders`(`count`, `profileType`, `customersId`, `orderNumber` ) VALUES (?,?,?,?)",
-    [orderNumber, customersId,profileType, count],
+    [orderNumber, customersId, profileType, count],
     (err, result) => {
       if (err) {
         console.log(err);
@@ -51,6 +51,23 @@ router.put("/updateOrder/:orderNumber", (req, res) => {
   db.query(sql, [...values, type], (err, data) => {
     if (err) return res.json("Error");
     return res.json(data); // Return result of the update operation
+  });
+});
+// Define an API endpoint to fetch data from order and order_material tables
+router.get("/order", (req, res) => {
+  const query = `
+    SELECT orderNumber  , count
+FROM "order" 
+
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error fetching data:", err);
+      res.status(500).send("Error fetching data");
+      return;
+    }
+    res.json(results);
   });
 });
 

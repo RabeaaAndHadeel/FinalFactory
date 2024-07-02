@@ -10,6 +10,8 @@
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
+  display: inline !important;
+  position: absolute;
 }
 
 .sidebarRight .nav-link {
@@ -28,4 +30,8 @@
   width: 30px;
   height: 30px;
   margin-right: 10px;
+}
+.arrowIcon {
+  width: 15px;
+  height: 15px;
 }

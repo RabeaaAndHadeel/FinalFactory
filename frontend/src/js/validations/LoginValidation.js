@@ -8,6 +8,7 @@ function Validation(values) {
   // Test the ID against the regular expression
   else if (!id_pattern.test(values.id))
     error.id = "ת.ז צריכה להיות מורכבת מ 9 מספרים";
+  else if (values.id < 0) error.id = " ת.ז צריכה להיות רק חיובית";
   else {
     error.id = ""; // Reset error if valid
   }

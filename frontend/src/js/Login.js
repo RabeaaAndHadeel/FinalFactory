@@ -32,7 +32,7 @@ function Login() {
           console.log(res);
           if (res.data === "success") {
             //if login was successful redirect to home page
-            navigate("/home");
+            navigate("/dashboard");
           } else {
             alert("no such  user exists!");
           }
@@ -59,7 +59,7 @@ function Login() {
             {errors.id && <span className="form-error">{errors.id}</span>}
           </div>
           <div className="mb">
-            <label htmlFor="password"  className="form-label" >
+            <label htmlFor="password" className="form-label">
               <strong>:סיסמה</strong>
             </label>
             <input
@@ -80,7 +80,7 @@ function Login() {
           <h5 className="rg">תיכנס אם אתה מסכים על כל החוקים</h5>
           {/* Link to registration page */}
           <Link to="/signup" className="form-button">
-              <strong>הרשמה</strong> 
+            <strong>הרשמה</strong>
           </Link>
         </form>
       </div>

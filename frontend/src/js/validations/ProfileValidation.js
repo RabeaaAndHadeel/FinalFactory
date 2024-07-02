@@ -10,19 +10,30 @@ function ProfileValidation(values) {
   else if (!id_pattern.test(values.id) || values.id < 0) {
     errors.id = "מקט צריך להיות מורכב מ-5 לא יכול להיות שלילי מספרים";
   }
-  // Check if the profile perimeter field is empty or negative
+
+  // Check if the profile perimeter field is empty or not numeric or outside the range
   if (values.perimeter === "") {
     errors.perimeter = "היקף זה שדה חובה";
-  } else if (values.perimeter < 0) {
+  } else if (
+    isNaN(values.perimeter) ||
+    values.perimeter < 50 ||
+    values.perimeter > 300 ||
+    values.perimeter < 0
+  ) {
+    errors.perimeter = " היקף צריך להיות מספר בין 50 ל-300";
+  } else if (values.perimeter < 0)
     errors.perimeter = "היקף לא יכול להיות שלילי";
-  }
 
-  // Check if the profile weight field is empty or negative
+  // Check if the profile weight field is empty or not numeric or outside the range
   if (values.weight === "") {
     errors.weight = "משקל זה שדה חובה";
-  } else if (values.weight < 0) {
-    errors.weight = "משקל לא יכול להיות שלילי";
-  }
+  } else if (
+    isNaN(values.weight) ||
+    values.weight < 50 ||
+    values.weight > 300
+  ) {
+    errors.weight = "משקל צריך להיות מספר בין 50 ל-300";
+  } else if (values.weight < 0) errors.weight = "משקל לא יכול להיות שלילי";
 
   return errors; // Return the errors object
 }

@@ -1,4 +1,4 @@
-const alphabeticalPattern = /^[a-zA-Z]+$/;
+const alphabeticalPattern = /^[\u0590-\u05FF\s]+$/;
 const thicknessPattern = /^\d{1,3}$/;
 
 function Validation(values) {

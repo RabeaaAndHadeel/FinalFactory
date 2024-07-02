@@ -1,0 +1,54 @@
+.dashboardContainer {
+  width: 65%; /* Set the container width to half of the page */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: #fff;
+  padding: 20px;
+  margin-left: 60px; /* Add margin to create space around the container */
+  border-radius: 10px; /* Optional: add border-radius for a rounded effect */
+}
+
+.dashboardTitle {
+  font-size: 2em;
+  color: white;
+  margin-bottom: 20px;
+  float: left;
+  font-weight: bolder;
+  margin-left: 24rem;
+}
+.h2 {
+  font-weight: bolder;
+}
+.netPromoterScore {
+  background-color: #3b3b3b;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  width: 100%;
+  text-align: center;
+}
+
+.chartContainer {
+  border: 6px solid white;
+  background: transparent;
+  backdrop-filter: blur(20px);
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  width: 100%;
+}
+
+.chartWrapper {
+  background-color: rgb(56, 55, 55);
+  padding: 10px;
+  border-radius: 10px;
+}
+
+h2 {
+  color: #ffce56;
+}
+
+.chartWrapper canvas {
+  border-radius: 10px;
+}
