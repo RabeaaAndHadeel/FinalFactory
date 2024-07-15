@@ -45,7 +45,8 @@ router.delete("/order/:orderNumber", (req, res) => {
 
 // Route to update an order by orderNumber
 router.put("/updateOrder/:orderNumber", (req, res) => {
-  const sql = "UPDATE `orders` SET `type`=?,`count`=? WHERE orderNumber = ?";
+  const sql =
+    "UPDATE `orders` SET `profileType`=?,`count`=? WHERE orderNumber = ?";
   const values = [req.body.type, req.body.count];
   const type = req.params.orderNumber;
   db.query(sql, [...values, type], (err, data) => {
@@ -57,7 +58,7 @@ router.put("/updateOrder/:orderNumber", (req, res) => {
 router.get("/order", (req, res) => {
   const query = `
     SELECT orderNumber  , count
-FROM "order" 
+FROM "order"
 
   `;
 

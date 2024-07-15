@@ -17,8 +17,9 @@ const searchGlass = require("./routes/search/searchGlass"); //the glass search r
 const searchOrder = require("./routes/search/searchOrder"); //the glass search route path
 const searchProduct = require("./routes/search/searchProduct"); //the glass search route path
 const searchCustomers = require("./routes/search/searchCustomers"); //the glass search route path
-const searchSuppliers=require("./routes/search/searchSupplier")
+const searchSuppliers = require("./routes/search/searchSupplier");
 const bid = require("./routes/bid");
+
 const port = process.env.PORT || 3000;
 // Creating an Express application
 const app = express();

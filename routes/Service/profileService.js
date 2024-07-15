@@ -18,8 +18,11 @@ const getAllProfiles = () => {
 const createProfile = (profile) => {
   return new Promise((resolve, reject) => {
     const { id, perimeter, weight } = profile;
-    const q = "INSERT INTO profile (id, perimeter, weight) VALUES (?, ?, ?)";
-    db.query(q, [id, perimeter, weight], (err, result) => {
+    // Set status to 1 (active) for new entries
+    const status = 1;
+    const q =
+      "INSERT INTO profile (id, perimeter, weight,status) VALUES (?, ?, ?,?)";
+    db.query(q, [id, perimeter, weight, status], (err, result) => {
       if (err) {
         reject(err);
       } else {
@@ -70,5 +73,5 @@ module.exports = {
   getAllProfiles,
   createProfile,
   deleteProfileById,
-  updateProfileById
+  updateProfileById,
 };
