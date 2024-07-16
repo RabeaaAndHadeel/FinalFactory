@@ -14,6 +14,11 @@ function SupplierValidation(values) {
   } else if (!contact_pattern.test(values.contact)) {
     errors.contact = "איש קשר צריך להיות בנוי רק מאותיות עבריות ורווחים";
   }
+ if (!values.address) {
+   errors.address = "מקום מגורים זה שדה חובה";
+ } else if (!contact_pattern.test(values.address)) {
+   errors.address = "מקום מגורים צריך להיות בנוי רק מאותיות עבריות ורווחים";
+ }
 
   return errors;
 }

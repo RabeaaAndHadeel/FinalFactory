@@ -1,20 +1,27 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import SearchBar from "./searchBar/SearchBar";
-import editIcon from '../img/icon/edit.png';
-import saveIcon from '../img/icon/save.png';
-import closeIcon from '../img/icon/close.png';
-import addIcon from '../img/icon/add.png';
-import Switch from "react-switch";
-import classes from '../css/table.module.css';
+import editIcon from "../img/icon/edit.png";
+import saveIcon from "../img/icon/save.png";
+import closeIcon from "../img/icon/close.png";
+import addIcon from "../img/icon/add.png";
+import classes from "../css/table.module.css";
+import ProfileValidation from "../js/validations/ProfileValidation";
 
 const Profile = () => {
   const [profiles, setProfiles] = useState([]);
   const [search, setSearch] = useState("");
+  const [errors, setErrors] = useState({});
   const [editingIndex, setEditingIndex] = useState(null);
-  const [formData, setFormData] = useState({ weight: "", perimeter: "", id: "" });
+  const [formData, setFormData] = useState({
+    weight: "",
+    perimeter: "",
+    id: "",
+    status: 1, // Initialize status
+  });
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedRows, setSelectedRows] = useState([]);
+  const [displayActiveOnly, setDisplayActiveOnly] = useState(1); // Initialize to show active profiles
+  const [message, setMessage] = useState({}); // Added for activation messages
   const rowsPerPage = 6;
 
   useEffect(() => {
@@ -36,23 +43,36 @@ const Profile = () => {
 
   const handleCancel = () => {
     setEditingIndex(null);
-    setFormData({ weight: "", perimeter: "", id: "" });
+    setFormData({ weight: "", perimeter: "", id: "", status: 0 }); // Reset status to 0 on cancel
+    setErrors({});
   };
 
   const handleSave = async () => {
     try {
+      const validationErrors = ProfileValidation(formData);
+      if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+        return;
+      }
+
+      let updatedProfile;
       if (formData.id && editingIndex !== profiles.length) {
         await axios.put(`/profile/${formData.id}`, formData);
         const updatedProfiles = [...profiles];
         updatedProfiles[editingIndex] = formData;
         setProfiles(updatedProfiles);
+        updatedProfile = formData;
       } else {
         const res = await axios.post("/profile", formData);
         setProfiles([...profiles, res.data]);
+        updatedProfile = res.data;
       }
+
+      // Reset form and state after save
       handleCancel();
     } catch (err) {
-      console.log(err);
+      console.error("Error saving profile:", err);
+      // Handle error or display error message
     }
   };
 
@@ -60,25 +80,60 @@ const Profile = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSelectRow = (id) => {
-    if (selectedRows.includes(id)) {
-      setSelectedRows(selectedRows.filter(rowId => rowId !== id));
-    } else {
-      setSelectedRows([...selectedRows, id]);
+  const handleActivateTable = async (table) => {
+    try {
+      const newStatus = table.status === 1 ? 0 : 1; // Toggle status between 0 and 1
+      const res = await axios.put(`/profile/${table.id}`, {
+        ...table,
+        status: newStatus,
+      });
+      if (res.status === 200) {
+        const updatedData = profiles.map((item) =>
+          item.id === table.id ? { ...item, status: newStatus } : item
+        );
+        setProfiles(updatedData);
+        setMessage({
+          msgClass: "success",
+          text:
+            newStatus === 1
+              ? "Profile activated successfully!"
+              : "Profile deactivated successfully!",
+        });
+        setTimeout(() => {
+          setMessage({});
+        }, 2000);
+      } else {
+        setMessage({
+          msgClass: "error",
+          text: "Failed to update profile status",
+        });
+      }
+    } catch (error) {
+      console.error("Error updating profile status:", error);
+      setMessage({
+        msgClass: "error",
+        text: "Failed to update profile status",
+      });
     }
   };
 
-  const handleSelectAllRows = (checked) => {
-    if (checked) {
-      setSelectedRows(profiles.map(profile => profile.id));
+  const handleChangeDisplay = (event) => {
+    const option = event.target.value;
+    if (option === "active") {
+      setDisplayActiveOnly(1);
+    } else if (option === "inactive") {
+      setDisplayActiveOnly(0);
     } else {
-      setSelectedRows([]);
+      setDisplayActiveOnly(null);
     }
   };
 
-  const filteredProfiles = profiles.filter((data) =>
-    data.id.toString().includes(search)
-  );
+  const filteredProfiles = profiles
+    .filter((data) => data.id.toString().includes(search))
+    .filter((profile) => {
+      if (displayActiveOnly === null) return true;
+      return displayActiveOnly ? profile.status === 1 : profile.status === 0;
+    });
 
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -88,157 +143,251 @@ const Profile = () => {
 
   const handleAddProfile = () => {
     setEditingIndex(profiles.length);
-    setFormData({ weight: "", perimeter: "", id: "" });
+    setFormData({ weight: "", perimeter: "", id: "", status: 1 });
   };
 
   return (
-  <div className={classes.container}>
-    <div className={classes.tablef}>
-      <h2 className="w-100 d-flex justify-content-center p-3">פרופיל</h2>
-      <div className="d-flex justify-content-between mb3">
-        <button className="btn btn-primary" onClick={handleAddProfile}>
-          <img src={addIcon} alt="Add" className={classes.icon} /> הוספת פרופיל
-        </button>
-        <SearchBar searchVal={search} setSearchVal={setSearch} />
-      </div>
-      <table className={`table ${classes.table}`}>
-        <thead>
-          <tr>
-            <th>
-              <Switch
-                onChange={handleSelectAllRows}
-                checked={selectedRows.length === profiles.length}
-                checkedIcon={false}
-                uncheckedIcon={false}
-                onColor="#FF0000"
-                offColor="#059212"
-              />
-            </th>
-            <th>פעולות</th>
-            <th>משקל</th>
-            <th>היקף</th>
-            <th>מק"ט</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentRows.map((data, i) => (
-            <tr key={i}>
-              <td>
-                <Switch
-                  onChange={() => handleSelectRow(data.id)}
-                  checked={selectedRows.includes(data.id)}
-                  checkedIcon={false}
-                  uncheckedIcon={false}
-                  onColor="#FF0000"
-                  offColor="#059212"
-                />
-              </td>
-              <td>
-                {editingIndex === i ? (
-                  <>
-                    <img src={saveIcon} alt="Save" className={classes.icon} onClick={handleSave} />
-                    <img src={closeIcon} alt="Cancel" className={classes.icon} onClick={handleCancel} />
-                  </>
-                ) : (
-                  <img src={editIcon} alt="Edit" className={classes.icon} onClick={() => handleEdit(i, data)} />
-                )}
-              </td>
-              <td>
-                {editingIndex === i ? (
-                  <input
-                    type="text"
-                    name="weight"
-                    value={formData.weight}
-                    onChange={handleChange}
-                    placeholder="משקל"
-                    className="form-control"
-                  />
-                ) : (
-                  data.weight
-                )}
-              </td>
-              <td>
-                {editingIndex === i ? (
-                  <input
-                    type="text"
-                    name="perimeter"
-                    value={formData.perimeter}
-                    onChange={handleChange}
-                    placeholder="היקף"
-                    className="form-control"
-                  />
-                ) : (
-                  data.perimeter
-                )}
-              </td>
-              <td>
-                {editingIndex === i ? (
-                  <input
-                    type="text"
-                    name="id"
-                    value={formData.id}
-                    onChange={handleChange}
-                    placeholder="מק'ט"
-                    className="form-control"
-                    disabled={formData.id !== ""}
-                  />
-                ) : (
-                  data.id
-                )}
-              </td>
-            </tr>
-          ))}
-          {editingIndex === profiles.length && (
-            <tr>
-              <td>
-                <img src={saveIcon} alt="Save" className={classes.icon} onClick={handleSave} />
-                <img src={closeIcon} alt="Cancel" className={classes.icon} onClick={handleCancel} />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  name="weight"
-                  value={formData.weight}
-                  onChange={handleChange}
-                  placeholder="משקל"
-                  className="form-control"
-                />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  name="perimeter"
-                  value={formData.perimeter}
-                  onChange={handleChange}
-                  placeholder="היקף"
-                  className="form-control"
-                />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  name="id"
-                  value={formData.id}
-                  onChange={handleChange}
-                  placeholder="מק'ט"
-                  className="form-control"
-                />
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-      <div className="pagination">
-        {[...Array(Math.ceil(filteredProfiles.length / rowsPerPage)).keys()].map(number => (
-          <button key={number + 1} onClick={() => paginate(number + 1)} className="page-link">
-            {number + 1}
+    <div className={classes.container}>
+      <div className={classes.tablef}>
+        <h2 className="w-100 d-flex justify-content-center p-3">פרופיל</h2>
+        <div className="d-flex justify-content-between mb-3">
+          <button className="btn btn-primary" onClick={handleAddProfile}>
+            <img src={addIcon} alt="Add" className={classes.icon} /> הוספת
+            פרופיל
           </button>
-        ))}
+          <div>
+            <select onChange={handleChangeDisplay} className="form-select">
+              <option value="">הכל</option>
+              <option value="active">פעילות</option>
+              <option value="inactive">לא פעילות</option>
+            </select>
+          </div>
+          <SearchBar searchVal={search} setSearchVal={setSearch} />
+        </div>
+        {message.text && (
+          <div
+            className={`alert ${
+              message.msgClass === "success" ? "alert-success" : "alert-danger"
+            }`}
+          >
+            {message.text}
+          </div>
+        )}
+        <table className={`table ${classes.table}`}>
+          <thead>
+            <tr>
+              <th>פעולות</th>
+              <th>סטטוס</th>
+              <th>משקל בק"ג</th>
+              <th>היקף ב מ"מ</th>
+              <th>מק"ט</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentRows.map((data, i) => (
+              <tr key={data.id}>
+                <td>
+                  {editingIndex === i ? (
+                    <>
+                      <img
+                        src={saveIcon}
+                        alt="Save"
+                        className={classes.icon}
+                        onClick={handleSave}
+                      />
+                      <img
+                        src={closeIcon}
+                        alt="Cancel"
+                        className={classes.icon}
+                        onClick={handleCancel}
+                      />
+                    </>
+                  ) : (
+                    <div>
+                      <img
+                        src={editIcon}
+                        alt="Edit"
+                        className={classes.icon}
+                        onClick={() => handleEdit(i, data)}
+                      />
+                      {data.status === 1 ? (
+                        <button
+                          className="btn btn-link p-0"
+                          onClick={() => handleActivateTable(data)}
+                        >
+                          שנה סטטוס
+                        </button>
+                      ) : (
+                        <button
+                          className="btn btn-link p-0"
+                          onClick={() => handleActivateTable(data)}
+                        >
+                          שנה סטטוס
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </td>
+                <td>
+                  {editingIndex === i ? (
+                    <>
+                      <input
+                        type="text"
+                        name="status"
+                        value={formData.status}
+                        onChange={handleChange}
+                        placeholder="סטטוס"
+                        className="form-control"
+                        disabled
+                      />
+                    </>
+                  ) : data.status === 1 ? (
+                    "פעיל"
+                  ) : (
+                    "לא פעיל"
+                  )}
+                </td>
+                <td>
+                  {editingIndex === i ? (
+                    <>
+                      <input
+                        type="text"
+                        name="weight"
+                        value={formData.weight}
+                        onChange={handleChange}
+                        placeholder="משקל"
+                        className="form-control"
+                      />
+                      {errors.weight && (
+                        <div className="text-danger">{errors.weight}</div>
+                      )}
+                    </>
+                  ) : (
+                    data.weight
+                  )}
+                </td>
+                <td>
+                  {editingIndex === i ? (
+                    <>
+                      <input
+                        type="text"
+                        name="perimeter"
+                        value={formData.perimeter}
+                        onChange={handleChange}
+                        placeholder="היקף"
+                        className="form-control"
+                      />
+                      {errors.perimeter && (
+                        <div className="text-danger">{errors.perimeter}</div>
+                      )}
+                    </>
+                  ) : (
+                    data.perimeter
+                  )}
+                </td>
+                <td>
+                  {editingIndex === i ? (
+                    <>
+                      <input
+                        type="text"
+                        name="id"
+                        value={formData.id}
+                        onChange={handleChange}
+                        placeholder="מק'ט"
+                        className="form-control"
+                        disabled={formData.id !== ""}
+                      />
+                      {errors.id && (
+                        <div className="text-danger">{errors.id}</div>
+                      )}
+                    </>
+                  ) : (
+                    data.id
+                  )}
+                </td>
+              </tr>
+            ))}
+            {editingIndex === profiles.length && (
+              <tr>
+                <td>
+                  <img
+                    src={saveIcon}
+                    alt="Save"
+                    className={classes.icon}
+                    onClick={handleSave}
+                  />
+                  <img
+                    src={closeIcon}
+                    alt="Cancel"
+                    className={classes.icon}
+                    onClick={handleCancel}
+                  />
+                </td>
+                <td>
+                  <>
+                    <input
+                      type="text"
+                      name="weight"
+                      value={formData.weight}
+                      onChange={handleChange}
+                      placeholder="משקל"
+                      className="form-control"
+                    />
+                    {errors.weight && (
+                      <div className="text-danger">{errors.weight}</div>
+                    )}
+                  </>
+                </td>
+                <td>
+                  <>
+                    <input
+                      type="text"
+                      name="perimeter"
+                      value={formData.perimeter}
+                      onChange={handleChange}
+                      placeholder="היקף"
+                      className="form-control"
+                    />
+                    {errors.perimeter && (
+                      <div className="text-danger">{errors.perimeter}</div>
+                    )}
+                  </>
+                </td>
+                <td>
+                  <>
+                    <input
+                      type="text"
+                      name="id"
+                      value={formData.id}
+                      onChange={handleChange}
+                      placeholder="מק'ט"
+                      className="form-control"
+                    />
+                    {errors.id && (
+                      <div className="text-danger">{errors.id}</div>
+                    )}
+                  </>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+        <div className="pagination">
+          {[
+            ...Array(Math.ceil(filteredProfiles.length / rowsPerPage)).keys(),
+          ].map((number) => (
+            <button
+              key={number + 1}
+              onClick={() => paginate(number + 1)}
+              className="page-link"
+            >
+              {number + 1}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
-  </div>
-)
-
+  );
 };
 
 export default Profile;
