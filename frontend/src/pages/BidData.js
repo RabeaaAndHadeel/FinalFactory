@@ -3,10 +3,11 @@ import Footer from "../components/footer/Footer";
 import Bid from "../js/Bid";
 import SideBar from "../components/sideBar/SideBar";
 
+
 function BidData() {
   return (
     <div>
-      <SideBar />
+      <SideBar/>
       {/* Bid component */}
       <Bid />
       {/* footer component */}

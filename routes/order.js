@@ -1,11 +1,13 @@
+//Hadeel and Rabeaa
 const express = require("express");
+
 const db = require("../dbcon"); // dbcon is a module for database connection
 
 const router = express.Router();
 
 // Route to fetch all orders
 router.get("/order", (req, res) => {
-  const q = "SELECT * FROM `orders`";
+  const q = "SELECT * FROM`orders`";
   db.query(q, (err, data) => {
     if (err) {
       console.log(err);
@@ -14,44 +16,59 @@ router.get("/order", (req, res) => {
     return res.json(data);
   });
 });
-
-// Route to create a new order
+// Route to create a new orders
 router.post("/createOrder", (req, res) => {
-  const { orderNumber, profileType, count, customersId, supplierId } = req.body;
-  const status = 1; // Setting default status as 1 (active)
-  const q =
-    "INSERT INTO `orders` (`orderNumber`, `profileType`, `count`, `customersId`, `supplierId`, `status`) VALUES (?, ?, ?, ?, ?, ?)";
+  let { orderNumber, type, count } = req.body;
+
   db.query(
-    q,
-    [orderNumber, profileType, count, customersId, supplierId, status],
+    "INSERT INTO `orders`(`count`, `profileType`, `customersId`, `orderNumber` ) VALUES (?,?,?,?)",
+    [orderNumber, customersId, profileType, count],
     (err, result) => {
       if (err) {
         console.log(err);
-        return res.json(err);
+      } else {
+        res.json("You have added successfully!");
       }
-      res.json("Order added successfully!");
     }
   );
 });
 
-// Route to delete an order by orderNumber
+// Route to delete a order by orderNumber
 router.delete("/order/:orderNumber", (req, res) => {
-  const sql = "DELETE FROM `orders` WHERE `orderNumber` = ?";
-  const orderNumber = req.params.orderNumber;
-  db.query(sql, [orderNumber], (err, data) => {
+  const sql = "DELETE FROM `orders` WHERE orderNumber = ?";
+  const type = req.params.orderNumber;
+  db.query(sql, [type], (err, data) => {
     if (err) return res.json("Error");
     return res.json(data);
   });
 });
 
 // Route to update an order by orderNumber
-router.put("/order/:orderNumber", (req, res) => {
-  const sql = "UPDATE `orders` SET `status`=? WHERE `orderNumber` = ?";
-  const { status } = req.body;
-  const orderNumber = req.params.orderNumber;
-  db.query(sql, [status, orderNumber], (err, data) => {
+router.put("/updateOrder/:orderNumber", (req, res) => {
+  const sql =
+    "UPDATE `orders` SET `profileType`=?,`count`=? WHERE orderNumber = ?";
+  const values = [req.body.type, req.body.count];
+  const type = req.params.orderNumber;
+  db.query(sql, [...values, type], (err, data) => {
     if (err) return res.json("Error");
-    return res.json(data);
+    return res.json(data); // Return result of the update operation
+  });
+});
+// Define an API endpoint to fetch data from order and order_material tables
+router.get("/order", (req, res) => {
+  const query = `
+    SELECT orderNumber  , count
+FROM "order"
+
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error fetching data:", err);
+      res.status(500).send("Error fetching data");
+      return;
+    }
+    res.json(results);
   });
 });
 

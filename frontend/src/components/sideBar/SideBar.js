@@ -14,17 +14,43 @@ import material from "../../img/icon/list.png";
 import settingsIcon from "../../img/icon/settings.png";
 import factoryData from "../../img/icon/factoryData.png";
 import arrow from "../../img/icon/arrow.png";
+import activeIcon from "../../img/icon/check.png";
+import nonActiveIcon from "../../img/icon/remove.png";
 import classes from "../../components/sideBar/sideBar.module.css";
 
 function SideBar() {
   const [isMaterialsOpen, setIsMaterialsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isActiveOrderOpen, setIsActiveOrderOpen] = useState(false);
+  const [isGlassOpen, setIsGlassOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isFoamOpen, setIsFoamOpen] = useState(false);
+  const [isBidOpen, setIsBidOpen] = useState(false);
   const toggleMaterials = () => {
     setIsMaterialsOpen(!isMaterialsOpen);
+  };
+  const toggleBid = () => {
+    setIsBidOpen(!isBidOpen);
   };
   const toggleSettings = () => {
     setIsSettingsOpen(!isSettingsOpen);
   };
+
+  const toggleActiveOrder = () => {
+    setIsActiveOrderOpen(!isActiveOrderOpen);
+  };
+  const toggleGlass = () => {
+    setIsGlassOpen(!isGlassOpen);
+  };
+
+  const toggleProfile = () => {
+    setIsProfileOpen(!isProfileOpen);
+  };
+
+  const toggleFoam = () => {
+    setIsFoamOpen(!isFoamOpen);
+  };
+
   return (
     <div
       className={`d-flex flex-column justify-content-between bg-white text-black p-4 ${classes.sidebarRight}`}
@@ -53,36 +79,147 @@ function SideBar() {
             {isMaterialsOpen && (
               <ul className="nav nav-pills flex-column p-0 m-0 ms-4">
                 <li className="nav-item p-1">
-                  <Link
-                    to="/profile"
+                  <div
                     className={`d-flex align-items-center nav-link text-dark ${classes.navLink}`}
+                    onClick={toggleProfile}
+                    style={{ cursor: "pointer" }}
                   >
                     <img src={profile} alt="profile" className={classes.icon} />
-                    <span className="fs-5 fw-bold">פרופיל </span>
-                  </Link>
+                    <span className="fs-5 fw-bold">פרופיל</span>
+                    <img
+                      src={arrow}
+                      alt="arrow"
+                      className={`ms-auto ${classes.arrowIcon}`}
+                    />
+                  </div>
+                  {isProfileOpen && (
+                    <ul className="nav nav-pills flex-column p-0 m-0 ms-4">
+                      <li className="nav-item p-1">
+                        <Link
+                          to="/profile"
+                          className={`d-flex align-items-center nav-link text-dark ${classes.navLink}`}
+                        >
+                          <img
+                            src={activeIcon}
+                            alt="active"
+                            className={classes.icon}
+                          />
+                          <span className="fs-6 fw-bold"> פרופיל פעיל </span>
+                        </Link>
+                      </li>
+                      {/* <li className="nav-item p-1">
+                        <Link
+                          to="/nonActiveProfile"
+                          className={`d-flex align-items-center nav-link text-dark ${classes.navLink}`}
+                        >
+                          <img
+                            src={nonActiveIcon}
+                            alt="non-active"
+                            className={classes.icon}
+                          />
+                          <span className="fs-6 fw-bold"> פרופיל לא פעיל </span>
+                        </Link> */}
+                      {/* </li> */}
+                    </ul>
+                  )}
                 </li>
                 <li className="nav-item p-1">
-                  <Link
-                    to="/glass"
+                  <div
                     className={`d-flex align-items-center nav-link text-dark ${classes.navLink}`}
+                    onClick={toggleGlass}
+                    style={{ cursor: "pointer" }}
                   >
-                    <img src={glass} alt="product" className={classes.icon} />
-                    <span className="fs-5 fw-bold">זכוכית </span>
-                  </Link>
+                    <img src={glass} alt="glass" className={classes.icon} />
+                    <span className="fs-5 fw-bold">זכוכית</span>
+                    <img
+                      src={arrow}
+                      alt="arrow"
+                      className={`ms-auto ${classes.arrowIcon}`}
+                    />
+                  </div>
+                  {isGlassOpen && (
+                    <ul className="nav nav-pills flex-column p-0 m-0 ms-4">
+                      <li className="nav-item p-1">
+                        <Link
+                          to="/glass"
+                          className={`d-flex align-items-center nav-link text-dark ${classes.navLink}`}
+                        >
+                          <img
+                            src={activeIcon}
+                            alt="active"
+                            className={classes.icon}
+                          />
+                          <span className="fs-6 fw-bold"> זכוכית פעילה </span>
+                        </Link>
+                      </li>
+                      {/* <li className="nav-item p-1">
+                        <Link
+                          to="/nonActiveGlass"
+                          className={`d-flex align-items-center nav-link text-dark ${classes.navLink}`}
+                        >
+                          <img
+                            src={nonActiveIcon}
+                            alt="non-active"
+                            className={classes.icon}
+                          />
+                          <span className="fs-6 fw-bold">
+                            {" "}
+                            זכוכית לא פעילה{" "}
+                          </span>
+                        </Link>
+                      </li> */}
+                    </ul>
+                  )}
                 </li>
                 <li className="nav-item p-1">
-                  <Link
-                    to="/foam"
+                  <div
                     className={`d-flex align-items-center nav-link text-dark ${classes.navLink}`}
+                    onClick={toggleFoam}
+                    style={{ cursor: "pointer" }}
                   >
                     <img src={foam} alt="foam" className={classes.icon} />
-                    <span className="fs-5 fw-bold">פרזול </span>
-                  </Link>
+                    <span className="fs-5 fw-bold">פרזול</span>
+                    <img
+                      src={arrow}
+                      alt="arrow"
+                      className={`ms-auto ${classes.arrowIcon}`}
+                    />
+                  </div>
+                  {isFoamOpen && (
+                    <ul className="nav nav-pills flex-column p-0 m-0 ms-4">
+                      <li className="nav-item p-1">
+                        <Link
+                          to="/foam"
+                          className={`d-flex align-items-center nav-link text-dark ${classes.navLink}`}
+                        >
+                          <img
+                            src={activeIcon}
+                            alt="active"
+                            className={classes.icon}
+                          />
+                          <span className="fs-6 fw-bold"> פרזול פעיל </span>
+                        </Link>
+                      </li>
+                      {/* <li className="nav-item p-1">
+                        <Link
+                          to="/nonActiveFoam"
+                          className={`d-flex align-items-center nav-link text-dark ${classes.navLink}`}
+                        >
+                          <img
+                            src={nonActiveIcon}
+                            alt="non-active"
+                            className={classes.icon}
+                          />
+                          <span className="fs-6 fw-bold"> פרזול לא פעיל </span>
+                        </Link>
+                      </li> */}
+                    </ul>
+                  )}
                 </li>
               </ul>
             )}
           </li>
-          <li className="nav-item p-1">
+          {/* <li className="nav-item p-1">
             <Link
               to="/product"
               className={`d-flex align-items-center nav-link text-dark ${classes.navLink}`}
@@ -90,24 +227,99 @@ function SideBar() {
               <img src={product} alt="product" className={classes.icon} />
               <span className="fs-5 fw-bold">מוצרים </span>
             </Link>
-          </li>
+          </li> */}
           <li className="nav-item p-1">
-            <Link
-              to="/bid"
+            <div
               className={`d-flex align-items-center nav-link text-dark ${classes.navLink}`}
+              onClick={toggleBid}
+              style={{ cursor: "pointer" }}
             >
               <img src={bid} alt="bid" className={classes.icon} />
-              <span className="fs-5 fw-bold">הצעות מחיר </span>
-            </Link>
+              <span className="fs-5 fw-bold">הצעת מחיר </span>
+              <img
+                src={arrow}
+                alt="arrow"
+                className={`ms-auto ${classes.arrowIcon}`}
+              />
+            </div>
+            {isBidOpen && (
+              <ul className="nav nav-pills flex-column p-0 m-0 ms-4">
+                <li className="nav-item p-1">
+                  <Link
+                    to="/bid"
+                    className={`d-flex align-items-center nav-link text-dark ${classes.navLink}`}
+                  >
+                    <img
+                      src={activeIcon}
+                      alt="active"
+                      className={classes.icon}
+                    />
+                    <span className="fs-6 fw-bold"> הצעת מחיר פעילה </span>
+                  </Link>
+                </li>
+                {/* <li className="nav-item p-1">
+                  <Link
+                    to="/nonActiveBid"
+                    className={`d-flex align-items-center nav-link text-dark ${classes.navLink}`}
+                  >
+                    <img
+                      src={nonActiveIcon}
+                      alt="non-active"
+                      className={classes.icon}
+                    />
+                    <span className="fs-6 fw-bold"> הצעת מחיר לא פעילה </span>
+                  </Link>
+                </li> */}
+              </ul>
+            )}
           </li>
           <li className="nav-item p-1">
-            <Link
-              to="/order"
+            <div
               className={`d-flex align-items-center nav-link text-dark ${classes.navLink}`}
+              onClick={toggleActiveOrder}
+              style={{ cursor: "pointer" }}
             >
               <img src={order} alt="order" className={classes.icon} />
               <span className="fs-5 fw-bold">הזמנות </span>
-            </Link>
+              <img
+                src={arrow}
+                alt="arrow"
+                className={`ms-auto ${classes.arrowIcon}`}
+              />
+            </div>
+            {isActiveOrderOpen && (
+              <ul className="nav nav-pills flex-column p-0 m-0 ms-4">
+                <li className="nav-item p-1">
+                  <Link
+                    to="/order"
+                    className={`d-flex align-items-center nav-link text-dark ${classes.navLink}`}
+                  >
+                    <img
+                      src={activeIcon}
+                      alt="active"
+                      className={classes.icon}
+                    />
+                    <span className="fs-6 fw-bold"> הזמנות פעילות </span>
+                  </Link>
+                  <div
+                    className={`d-flex align-items-center nav-link text-dark ${classes.navLink}`}
+                  ></div>
+                </li>
+                {/* <li className="nav-item p-1">
+                  <Link
+                    to="/nonActiveOrder"
+                    className={`d-flex align-items-center nav-link text-dark ${classes.navLink}`}
+                  >
+                    <img
+                      src={nonActiveIcon}
+                      alt="non-active"
+                      className={classes.icon}
+                    />
+                    <span className="fs-6 fw-bold"> ההזמנה לא פעיל </span>
+                  </Link>
+                </li> */}
+              </ul>
+            )}
           </li>
           <li className="nav-item p-1">
             <div

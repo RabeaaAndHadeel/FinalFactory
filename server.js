@@ -19,7 +19,7 @@ const searchProduct = require("./routes/search/searchProduct"); //the glass sear
 const searchCustomers = require("./routes/search/searchCustomers"); //the glass search route path
 const searchSuppliers = require("./routes/search/searchSupplier");
 const bid = require("./routes/bid");
-
+const emailSend=require("./routes/emailSend")
 const port = process.env.PORT || 3000;
 // Creating an Express application
 const app = express();
@@ -47,7 +47,7 @@ app.use(searchCustomers); //using the customer search route
 app.use(searchSuppliers); //using the supplier search route
 app.use(factory); //using  the factory router
 app.use(bid); //using  the bid router
-
+app.use(emailSend);
 // if url is not found:
 app.use((req, res, next) => {
   res.status(404).send("<h1>Page not Found</h1>");

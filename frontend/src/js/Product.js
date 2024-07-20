@@ -1,99 +1,94 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
 import SearchBar from "./searchBar/SearchBar";
 
 const Product = () => {
+  const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
-  const [products, setProducts] = useState([
-    { price: "", quantity: "", height: "", width: "" },
-  ]);
 
-  const handleInputChange = (index, event) => {
-    const { name, value } = event.target;
-    const newProducts = [...products];
-    newProducts[index][name] = value;
-    setProducts(newProducts);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get("/products");
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`/products/${id}`);
+      window.location.reload(); // Refresh the page after successful deletion
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
   };
 
-  const addNewRow = () => {
-    setProducts([
-      ...products,
-      { price: "", quantity: "", height: "", width: "" },
-    ]);
-  };
+  const filteredProducts = products.filter((product) =>
+    product.customersId.toString().includes(search)
+  );
 
   return (
     <div className="container">
-      <h2 className="w-100 d-flex justify-content-center p-3">הצעת מחיר</h2>
-      <div>
-        <select>
-          <option value="active">חלון</option>
-          <option value="inactive">דלת</option>
-        </select>
-        <select>
-          <option value="active">כולל טריס</option>
-          <option value="inactive">לא כולל טריס</option>
-        </select>
-        <select>
-          <option value="active">כולל רשת</option>
-          <option value="inactive">לא כולל רשת</option>
-        </select>
-        <select>
-          <option value="active">כולל התקנה</option>
-          <option value="inactive">לא כולל התקנה</option>
-        </select>
-      </div>
-      <SearchBar search={search} setSearch={setSearch} />
+      <h2 className="w-100 d-flex justify-content-center p-3">מוצרים</h2>
+      <SearchBar searchVal={search} setSearchVal={setSearch} />
       <div className="row">
         <div className="col-md-12">
           <table className="table table-bordered">
             <thead>
               <tr>
+                <th>פעולות</th>
+                <th>תאריך</th>
                 <th>מחיר</th>
                 <th>כמות</th>
                 <th>גובה</th>
                 <th>רוחב</th>
+                <th>הערות</th>
+                <th>סוג פרופיל</th>
+                <th>סוג</th>
+                <th>ת.ז לקוח</th>
               </tr>
             </thead>
             <tbody>
-              {products.map((product, index) => (
+              {filteredProducts.map((product, index) => (
                 <tr key={index}>
                   <td>
-                    <input
-                      type="text"
-                      name="price"
-                      value={product.price}
-                      onChange={(e) => handleInputChange(index, e)}
-                    />
+                    <Link
+                      to={`/updateProduct/${product.customersId}`}
+                      className="btn btn-primary"
+                    >
+                      עדכון
+                    </Link>
+                    <button
+                      className="btn btn-danger ms-2"
+                      onClick={() => handleDelete(product.customersId)}
+                    >
+                      מחיקה
+                    </button>
                   </td>
-                  <td>
-                    <input
-                      type="text"
-                      name="quantity"
-                      value={product.quantity}
-                      onChange={(e) => handleInputChange(index, e)}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      name="height"
-                      value={product.height}
-                      onChange={(e) => handleInputChange(index, e)}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      name="width"
-                      value={product.width}
-                      onChange={(e) => handleInputChange(index, e)}
-                    />
-                  </td>
+                  <td>{product.date}</td>
+                  <td>{product.price}</td>
+                  <td>{product.count}</td>
+                  <td>{product.length}</td>
+                  <td>{product.width}</td>
+                  <td>{product.Remarks}</td>
+                  <td>{product.profileType}</td>
+                  <td>{product.type}</td>
+                  <td>{product.customersId}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <button onClick={addNewRow}>הוסף שורה חדשה</button>
+          <p style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Link to="/addProduct" className="btn btn-success">
+              הוספת מוצר חדש
+            </Link>
+          </p>
         </div>
       </div>
     </div>

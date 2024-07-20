@@ -14,24 +14,19 @@ const getAllProfiles = () => {
   });
 };
 
+// Function to create a new profile
 const createProfile = (profile) => {
   return new Promise((resolve, reject) => {
     const { id, perimeter, weight } = profile;
     // Set status to 1 (active) for new entries
     const status = 1;
-    const q = `
-      INSERT INTO profile (id, perimeter, weight, status) 
-      VALUES (?, ?, ?, ?)
-      ON DUPLICATE KEY UPDATE 
-        perimeter =VALUES(perimeter), 
-        weight = VALUES(weight),
-        status = VALUES(status)
-    `;
+    const q =
+      "INSERT INTO profile (id, perimeter, weight,status) VALUES (?, ?, ?,?)";
     db.query(q, [id, perimeter, weight, status], (err, result) => {
       if (err) {
         reject(err);
       } else {
-        // Fetch the newly created or updated profile
+        // Fetch the newly created profile
         const newProfileQuery = "SELECT * FROM profile WHERE id = ?";
         db.query(newProfileQuery, [id], (err, newProfileData) => {
           if (err) {

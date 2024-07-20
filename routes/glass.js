@@ -23,24 +23,20 @@ router.post("/create", (req, res) => {
 
   const status = 1;
 
-  const query = `
-    INSERT INTO glass (glassType, Thickness, status) 
-    VALUES (?, ?, ?)
-    ON DUPLICATE KEY UPDATE 
-      Thickness = VALUES(Thickness), 
-      status = VALUES(status)
-  `;
-
-  db.query(query, [glassType, Thickness, status], (err, result) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Internal Server Error" });
+  db.query(
+    "INSERT INTO `glass`(`glassType`, `Thickness`, `status`) VALUES (?, ?, ?)",
+    [glassType, Thickness, status],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+      return res.json({
+        message: "Glass added successfully!",
+        data: { glassType, Thickness, status },
+      });
     }
-    return res.json({
-      message: "Glass added or updated successfully!",
-      data: { glassType, Thickness, status },
-    });
-  });
+  );
 });
 
 // Route to delete a specific glass item

@@ -138,7 +138,7 @@ const Foam = () => {
     <div className={classes.container}>
       <div className={classes.tablef}>
         <h2 className="w-100 d-flex justify-content-center p-3">פרזול</h2>
-        <div className="d-flex justify-content-between mb-3">
+        <div className="d-flex justify-content-between mb3">
           <button className="btn btn-primary" onClick={handleAddFoam}>
             <img src={addIcon} alt="Add" className={classes.icon} /> הוספת פרזול
             חדש
@@ -171,11 +171,11 @@ const Foam = () => {
             </tr>
           </thead>
           <tbody>
-            {currentRows.map((data, index) => (
-              <tr key={data.foamId || `newFoam-${index}`}>
+            {currentRows.map((data, i) => (
+              <tr key={data.foamId}>
                 <td>
-                  {editingIndex === index ? (
-                    <div>
+                  {editingIndex === i ? (
+                    <>
                       <img
                         src={saveIcon}
                         alt="Save"
@@ -188,14 +188,14 @@ const Foam = () => {
                         className={classes.icon}
                         onClick={handleCancel}
                       />
-                    </div>
+                    </>
                   ) : (
-                    <div>
+                    <>
                       <img
                         src={editIcon}
                         alt="Edit"
                         className={classes.icon}
-                        onClick={() => handleEdit(index, data)}
+                        onClick={() => handleEdit(i, data)}
                       />
                       <button
                         className="btn btn-link p-0"
@@ -203,11 +203,11 @@ const Foam = () => {
                       >
                         שנה סטטוס
                       </button>
-                    </div>
+                    </>
                   )}
                 </td>
                 <td>
-                  {editingIndex === index ? (
+                  {editingIndex === i ? (
                     <input
                       type="text"
                       name="status"
@@ -224,8 +224,8 @@ const Foam = () => {
                   )}
                 </td>
                 <td>
-                  {editingIndex === index ? (
-                    <div>
+                  {editingIndex === i ? (
+                    <>
                       <input
                         type="text"
                         name="foamType"
@@ -237,31 +237,29 @@ const Foam = () => {
                       {errors.foamType && (
                         <div className="text-danger">{errors.foamType}</div>
                       )}
-                    </div>
+                    </>
                   ) : (
-                    <div>{data.foamType}</div>
+                    data.foamType
                   )}
                 </td>
                 <td>{data.foamId}</td>
               </tr>
             ))}
             {editingIndex === foam.length && (
-              <tr key={`newFoam-${foam.length}`}>
+              <tr key="newFoam">
                 <td>
-                  <div>
-                    <img
-                      src={saveIcon}
-                      alt="Save"
-                      className={classes.icon}
-                      onClick={handleSave}
-                    />
-                    <img
-                      src={closeIcon}
-                      alt="Cancel"
-                      className={classes.icon}
-                      onClick={handleCancel}
-                    />
-                  </div>
+                  <img
+                    src={saveIcon}
+                    alt="Save"
+                    className={classes.icon}
+                    onClick={handleSave}
+                  />
+                  <img
+                    src={closeIcon}
+                    alt="Cancel"
+                    className={classes.icon}
+                    onClick={handleCancel}
+                  />
                 </td>
                 <td>
                   <input
@@ -275,19 +273,17 @@ const Foam = () => {
                   />
                 </td>
                 <td>
-                  <div>
-                    <input
-                      type="text"
-                      name="foamType"
-                      value={formData.foamType}
-                      onChange={handleChange}
-                      placeholder="סוג פרזול"
-                      className="form-control"
-                    />
-                    {errors.foamType && (
-                      <div className="text-danger">{errors.foamType}</div>
-                    )}
-                  </div>
+                  <input
+                    type="text"
+                    name="foamType"
+                    value={formData.foamType}
+                    onChange={handleChange}
+                    placeholder="סוג פרזול"
+                    className="form-control"
+                  />
+                  {errors.foamType && (
+                    <div className="text-danger">{errors.foamType}</div>
+                  )}
                 </td>
                 <td>
                   <input
