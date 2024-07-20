@@ -18,20 +18,21 @@ router.get("/foam", (req, res) => {
 router.post("/createFoam", (req, res) => {
   const { foamId, foamType } = req.body;
   const status = 1;
+  const query = `
+    INSERT INTO foam (foamId, foamType, status) 
+    VALUES (?, ?, ?)
+    ON DUPLICATE KEY UPDATE 
+      foamType = VALUES(foamType), 
+      status = VALUES(status)
+  `;
 
-  if (!foamId || !foamType) {
-    return res.status(400).json({ error: "Missing required fields" });
-  }
-
-  const query =
-    "INSERT INTO `foam` (`foamId`, `foamType`, `status`) VALUES (?, ?, ?)";
   db.query(query, [foamId, foamType, status], (err, result) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: "Internal Server Error" });
     }
     return res.status(201).json({
-      message: "Foam added successfully!",
+      message: "Foam added or updated successfully!",
       data: { foamId, foamType, status },
     });
   });

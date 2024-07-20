@@ -186,7 +186,7 @@ const Glass = () => {
           </thead>
           <tbody>
             {currentRows.map((data, i) => (
-              <tr key={data.glassType}>
+              <tr key={`${data.glassType}-${i}`}>
                 <td>
                   {editingIndex === i ? (
                     <>
