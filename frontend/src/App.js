@@ -15,11 +15,12 @@ import ProductData from "./pages/ProductData";
 import Factory from "./pages/FactoryData";
 import Bid from "./pages/BidData";
 import Dashboard from "./pages/DashBoardData";
-
+import OrderInfo from "./pages/OrderInfo"
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/orderInfo" element={<OrderInfo />}></Route>
         <Route path="/dashboard" element={<Dashboard />}></Route>
         <Route path="/login" element={<LoginData />}></Route>
         {/* Route for login page */}

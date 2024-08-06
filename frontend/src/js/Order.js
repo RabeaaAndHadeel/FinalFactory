@@ -6,12 +6,10 @@ import saveIcon from "../img/icon/save.png";
 import closeIcon from "../img/icon/close.png";
 import addIcon from "../img/icon/add.png";
 import classes from "../css/table.module.css";
-import OrderValidation from "../js/validations/OrderValidation"; // Import the validation function
 
 const Order = () => {
   const [orders, setOrders] = useState([]);
   const [search, setSearch] = useState("");
-  const [errors, setErrors] = useState({});
   const [editingIndex, setEditingIndex] = useState(null);
   const [formData, setFormData] = useState({
     count: "",
@@ -19,11 +17,12 @@ const Order = () => {
     customersId: "",
     supplierId: "",
     orderNumber: "",
-    status: 1, // Initialize status
+    status: 1,
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [displayActiveOnly, setDisplayActiveOnly] = useState(true);
   const [message, setMessage] = useState(""); // Added for activation messages
+  const [supplierOrders, setSupplierOrders] = useState({}); // State to hold supplier order counts
   const rowsPerPage = 7;
 
   useEffect(() => {
@@ -31,8 +30,22 @@ const Order = () => {
       try {
         const response = await axios.get("/order");
         setOrders(response.data);
+
+        const supplierOrdersResponse = await axios.get("/supplier/orders");
+        setSupplierOrders(supplierOrdersResponse.data);
       } catch (error) {
         console.error("Error fetching orders:", error);
+        if (error.response) {
+          console.error("Server responded with status:", error.response.status);
+          console.error("Response data:", error.response.data);
+          // Handle specific errors or show appropriate message to users
+        } else if (error.request) {
+          console.error("No response received:", error.request);
+          // Handle if no response received from server
+        } else {
+          console.error("Error setting up the request:", error.message);
+          // Handle other errors in setting up the request
+        }
       }
     };
 
@@ -49,16 +62,9 @@ const Order = () => {
       orderNumber: "",
       status: 1, // Reset status on cancel
     });
-    setErrors({});
   };
 
   const handleSave = async () => {
-    const validationErrors = OrderValidation(formData);
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
-
     try {
       const res = await axios.post("/createOrder", formData);
       setOrders([...orders, res.data]);
@@ -70,17 +76,24 @@ const Order = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: undefined });
   };
 
-  const handleActivateOrder = async (orderNumber) => {
+  const handleActivateOrder = async (order) => {
     try {
-      const response = await axios.put(`/order/${orderNumber}`, {
-        status: 1, // Assuming 1 means active
+      const response = await axios.put(`/order/${order.orderNumber}`, {
+        status: order.status === 1 ? 0 : 1, // Toggle status
       });
-      console.log("Order status updated:", response.data);
+      setOrders(
+        orders.map((o) =>
+          o.orderNumber === order.orderNumber
+            ? { ...o, status: response.data.status }
+            : o
+        )
+      );
+      setMessage("Order status updated successfully!");
     } catch (error) {
       console.error("Error updating order status:", error);
+      setMessage("Failed to update order status");
     }
   };
 
@@ -97,9 +110,9 @@ const Order = () => {
 
   const filteredOrders = orders
     .filter((order) =>
-      (order.orderNumber || order.customersId || order.supplierId)
-        .toString()
-        .includes(search)
+      [order.orderNumber, order.customersId, order.supplierId]
+        .filter(Boolean)
+        .some((prop) => prop.toString().includes(search))
     )
     .filter((order) => {
       if (displayActiveOnly === null) return true;
@@ -109,6 +122,7 @@ const Order = () => {
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = filteredOrders.slice(indexOfFirstRow, indexOfLastRow);
+
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleAddOrder = () => {
@@ -121,7 +135,6 @@ const Order = () => {
       orderNumber: "",
       status: 1, // Initialize status
     });
-    setErrors({});
   };
 
   return (
@@ -134,185 +147,81 @@ const Order = () => {
           </button>
           <div>
             <select onChange={handleChangeDisplay} className="form-select">
-              <option value="">הכל</option>
-              <option value="active">פעילות</option>
-              <option value="inactive">לא פעילות</option>
+              <option value="active">פעיל</option>
+              <option value="inactive">לא פעיל</option>
+              <option value="all">הכל</option>
             </select>
           </div>
-          <SearchBar searchVal={search} setSearchVal={setSearch} />
+          <SearchBar onChange={(e) => setSearch(e.target.value)} />
         </div>
-        {message.text && (
-          <div
-            className={`alert ${
-              message.msgClass === "success" ? "alert-success" : "alert-danger"
-            }`}
-          >
-            {message.text}
-          </div>
-        )}
-        <table className={`table ${classes.table}`}>
+        <table className="table table-striped table-hover" dir="rtl">
           <thead>
             <tr>
-              <th>פעולות</th>
-              <th>סטטוס</th>
-              <th>כמות</th>
-              <th>סוג מוצר</th>
-              <th> ח"פ ספק</th>
-              <th>ת.ז לקוח</th>
               <th>מספר הזמנה</th>
+              <th>סוג פרופיל</th>
+              <th>מספר לקוח</th>
+              <th>ספק</th>
+              <th>כמות</th>
+              <th>סטטוס</th>
+              <th>פעולות</th>
             </tr>
           </thead>
           <tbody>
             {currentRows.map((order, index) => (
               <tr key={index}>
+                <td>{order.orderNumber}</td>
+                <td>{order.profileType}</td>
+                <td>{order.customersId}</td>
+                <td>{order.supplierId}</td>
+                <td>{order.count}</td>
                 <td>
-                  <div>
-                    <img
-                      src={editIcon}
-                      alt="Edit"
-                      className={classes.icon}
-                      onClick={() => setEditingIndex(index)}
-                    />
+                  {order.status === 1 ? (
                     <button
-                      className="btn btn-link p-0"
+                      className="btn btn-success"
                       onClick={() => handleActivateOrder(order)}
                     >
-                      שנה סטטוס
+                      פעיל
                     </button>
-                  </div>
+                  ) : (
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => handleActivateOrder(order)}
+                    >
+                      לא פעיל
+                    </button>
+                  )}
                 </td>
-                <td>{order.status === 1 ? "פעיל" : "לא פעיל"}</td>
-                <td>{order.count}</td>
-                <td>{order.profileType}</td>
-                <td>{order.supplierId}</td>
-                <td>{order.customersId}</td>
-                <td>{order.orderNumber}</td>
+                <td>
+                  {editingIndex === index ? (
+                    <>
+                      <button className="btn btn-success" onClick={handleSave}>
+                        <img
+                          src={saveIcon}
+                          alt="Save"
+                          className={classes.icon}
+                        />
+                      </button>
+                      <button className="btn btn-danger" onClick={handleCancel}>
+                        <img
+                          src={closeIcon}
+                          alt="Cancel"
+                          className={classes.icon}
+                        />
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => setEditingIndex(index)}
+                    >
+                      <img src={editIcon} alt="Edit" className={classes.icon} />
+                    </button>
+                  )}
+                </td>
               </tr>
             ))}
-            {editingIndex === orders.length && (
-              <tr>
-                <td>
-                  <select
-                    name="status"
-                    value={formData.status}
-                    onChange={handleChange}
-                    className={`form-control ${
-                      errors.status ? "is-invalid" : ""
-                    }`}
-                  >
-                    <option value={1}>פעיל</option>
-                    <option value={0}>לא פעיל</option>
-                  </select>
-                  {errors.status && (
-                    <div className="invalid-feedback">{errors.status}</div>
-                  )}
-                </td>
-                <td>
-                  <img
-                    src={saveIcon}
-                    alt="Save"
-                    className={classes.icon}
-                    onClick={handleSave}
-                  />
-                  <img
-                    src={closeIcon}
-                    alt="Cancel"
-                    className={classes.icon}
-                    onClick={handleCancel}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    name="count"
-                    value={formData.count}
-                    onChange={handleChange}
-                    placeholder="כמות"
-                    className={`form-control ${
-                      errors.count ? "is-invalid" : ""
-                    }`}
-                  />
-                  {errors.count && (
-                    <div className="invalid-feedback">{errors.count}</div>
-                  )}
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    name="profileType"
-                    value={formData.profileType}
-                    onChange={handleChange}
-                    placeholder="סוג מוצר"
-                    className={`form-control ${
-                      errors.profileType ? "is-invalid" : ""
-                    }`}
-                  />
-                  {errors.profileType && (
-                    <div className="invalid-feedback">{errors.profileType}</div>
-                  )}
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    name="supplierId"
-                    value={formData.supplierId}
-                    onChange={handleChange}
-                    placeholder="ח'פ ספק"
-                    className={`form-control ${
-                      errors.supplierId ? "is-invalid" : ""
-                    }`}
-                  />
-                  {errors.supplierId && (
-                    <div className="invalid-feedback">{errors.supplierId}</div>
-                  )}
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    name="customersId"
-                    value={formData.customersId}
-                    onChange={handleChange}
-                    placeholder="ת.ז לקוח"
-                    className={`form-control ${
-                      errors.customersId ? "is-invalid" : ""
-                    }`}
-                  />
-                  {errors.customersId && (
-                    <div className="invalid-feedback">{errors.customersId}</div>
-                  )}
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    name="orderNumber"
-                    value={formData.orderNumber}
-                    onChange={handleChange}
-                    placeholder="מספר הזמנה"
-                    className={`form-control ${
-                      errors.orderNumber ? "is-invalid" : ""
-                    }`}
-                  />
-                  {errors.orderNumber && (
-                    <div className="invalid-feedback">{errors.orderNumber}</div>
-                  )}
-                </td>
-              </tr>
-            )}
           </tbody>
         </table>
-        <div className="pagination">
-          {[
-            ...Array(Math.ceil(filteredOrders.length / rowsPerPage)).keys(),
-          ].map((number) => (
-            <button
-              key={number + 1}
-              onClick={() => paginate(number + 1)}
-              className="page-link"
-            >
-              {number + 1}
-            </button>
-          ))}
-        </div>
       </div>
     </div>
   );

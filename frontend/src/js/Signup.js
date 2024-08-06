@@ -36,7 +36,7 @@ function Signup() {
       axios
         .post("/signup", values) // Make a POST request to the signup endpoint
         .then((res) => {
-          navigate("/"); //if the signup was successful redirect to login page
+          navigate("/login"); //if the signup was successful redirect to login page
         })
         .catch((err) => console.log(err)); // Log any errors that occur during the request
     }
@@ -61,7 +61,7 @@ function Signup() {
           </div>
           <div className="mb">
             <label htmlFor="name" className="form-label">
-              <strong> :שם מפעל  </strong>
+              <strong> :שם מפעל </strong>
             </label>
             <input
               type="text"
@@ -92,7 +92,7 @@ function Signup() {
           </button>
           <h5 className="rg">תיכנס אם אתה מסכים על כל החוקים</h5>
           <Link to="/login" className="form-button">
-           <strong>כניסה</strong>
+            <strong>כניסה</strong>
           </Link>
         </form>
       </div>

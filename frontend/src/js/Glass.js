@@ -159,9 +159,9 @@ const Glass = () => {
           </button>
           <div>
             <select onChange={handleChangeDisplay} className="form-select">
-              <option value="">הכל</option>
               <option value="active">פעילות</option>
               <option value="inactive">לא פעילות</option>
+              <option value="">הכל</option>
             </select>
           </div>
           <SearchBar searchVal={search} setSearchVal={setSearch} />

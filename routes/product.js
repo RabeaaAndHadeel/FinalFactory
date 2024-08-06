@@ -1,5 +1,4 @@
 //Hadeel and Rabeaa
-const path = require("path");
 
 const express = require("express");
 
@@ -85,5 +84,14 @@ router.put("/updateProduct/:customersId", (req, res) => {
     return res.json(data); // Return result of the update operation
   });
 });
-
+// Endpoint to save items
+app.post('/saveItems', (req, res) => {
+  const newItems = req.body.list;
+  if (newItems && Array.isArray(newItems)) {
+    items = newItems;
+    return res.status(200).json({ message: 'Items saved successfully!' });
+  } else {
+    return res.status(400).json({ message: 'Invalid data format.' });
+  }
+});
 module.exports = router;

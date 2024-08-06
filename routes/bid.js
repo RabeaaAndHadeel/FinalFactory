@@ -2,6 +2,15 @@ const express = require("express");
 const db = require("../dbcon"); // Assuming dbcon handles MySQL connection
 const router = express.Router();
 
+// Helper function to handle SQL queries with promises
+const queryPromise = (sql, params = []) =>
+  new Promise((resolve, reject) => {
+    db.query(sql, params, (err, results) => {
+      if (err) reject(err);
+      else resolve(results);
+    });
+  });
+
 // Route to fetch all bids
 router.get("/bid", (req, res) => {
   const q = "SELECT * FROM `bid`";
@@ -38,7 +47,7 @@ router.post("/createBid", (req, res) => {
 
       // Insert bid into database
       db.query(
-        "INSERT INTO `bid` (`customersId`, `profileType`, `VAT`, `total`, `date`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO `bid` (`number`, `customersId`, `profileType`, `VAT`, `total`, `date`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?)",
         [number, customersId, profileType, VAT, total, date, status],
         (err, result) => {
           if (err) {
@@ -84,6 +93,37 @@ router.put("/bid/:number", (req, res) => {
       res.json({ message: "Bid updated successfully", data: result });
     }
   );
+});
+
+// Route to fetch customers with their bid counts
+router.get("/customer/bid", async (req, res) => {
+  try {
+    const ordersQuery = "SELECT * FROM `bid`";
+    const bidsQuery =
+      "SELECT `customersId`, COUNT(`customersId`) as bidCount FROM `bid` GROUP BY `customersId`";
+
+    const [ordersData, bidsData] = await Promise.all([
+      queryPromise(ordersQuery),
+      queryPromise(bidsQuery),
+    ]);
+
+    // Transform bidsData into a map for quick lookup
+    const bidsMap = bidsData.reduce((map, { customersId, bidCount }) => {
+      map[customersId] = bidCount;
+      return map;
+    }, {});
+
+    // Combine ordersData with bid counts
+    const ordersWithBids = ordersData.map((order) => ({
+      ...order,
+      bidCount: bidsMap[order.customersId] || 0, // Default to 0 if no bids found
+    }));
+
+    res.json(ordersWithBids);
+  } catch (err) {
+    console.error("Error fetching orders with bid counts:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 module.exports = router;

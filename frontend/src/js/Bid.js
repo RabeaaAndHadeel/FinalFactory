@@ -25,6 +25,7 @@ const Bid = () => {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [displayActiveOnly, setDisplayActiveOnly] = useState(1); // Initialize to show active bids
+  const [bidCounts, setBidCounts] = useState({}); // State to hold bid counts
   const rowsPerPage = 7;
 
   useEffect(() => {
@@ -35,9 +36,18 @@ const Bid = () => {
     try {
       const response = await axios.get("/bid");
       setBid(response.data);
+      calculateBidCounts(response.data);
     } catch (error) {
       console.error("Error fetching bids:", error);
     }
+  };
+
+  const calculateBidCounts = (bids) => {
+    const counts = bids.reduce((acc, bid) => {
+      acc[bid.customersId] = (acc[bid.customersId] || 0) + 1;
+      return acc;
+    }, {});
+    setBidCounts(counts);
   };
 
   const handleEdit = (index, data) => {
@@ -81,6 +91,7 @@ const Bid = () => {
         setBid([...bid, res.data.data]);
       }
       handleCancel();
+      calculateBidCounts(bid);
     } catch (err) {
       console.error("Error saving bid:", err);
     }
@@ -122,6 +133,7 @@ const Bid = () => {
           text: "Failed to update bid status",
         });
       }
+      calculateBidCounts(bid);
     } catch (error) {
       console.error("Error updating bid status:", error);
       setMessage({
@@ -179,9 +191,9 @@ const Bid = () => {
           </button>
           <div>
             <select onChange={handleChangeDisplay} className="form-select">
-              <option value="">הכל</option>
               <option value="active">פעילות</option>
               <option value="inactive">לא פעילות</option>
+              <option value="">הכל</option>
             </select>
           </div>
           <SearchBar searchVal={search} setSearchVal={setSearch} />

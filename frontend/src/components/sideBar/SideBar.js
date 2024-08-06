@@ -6,7 +6,6 @@ import glass from "../../img/windows.png";
 import foam from "../../img/hinge.png";
 import customer from "../../img/customer.png";
 import supplier from "../../img/manufacture.png";
-import product from "../../img/product.png";
 import order from "../../img/Order.png";
 import logout from "../../img/logout.png";
 import bid from "../../img/icon/bid.png";
@@ -84,15 +83,6 @@ function SideBar() {
           </li>
           <li className="nav-item p-1">
             <Link
-              to="/product"
-              className={`d-flex align-items-center nav-link text-dark ${classes.navLink}`}
-            >
-              <img src={product} alt="product" className={classes.icon} />
-              <span className="fs-5 fw-bold">מוצרים </span>
-            </Link>
-          </li>
-          <li className="nav-item p-1">
-            <Link
               to="/bid"
               className={`d-flex align-items-center nav-link text-dark ${classes.navLink}`}
             >
@@ -106,7 +96,7 @@ function SideBar() {
               className={`d-flex align-items-center nav-link text-dark ${classes.navLink}`}
             >
               <img src={order} alt="order" className={classes.icon} />
-              <span className="fs-5 fw-bold">הזמנות </span>
+              <span className="fs-5 fw-bold"> הזמנות  </span>
             </Link>
           </li>
           <li className="nav-item p-1">

@@ -20,21 +20,40 @@ const Customer = () => {
     phoneNumber: "",
     email: "",
     address: "",
+    status: "", // Added status field
   });
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 7;
 
   useEffect(() => {
-    const fetchAllCustomers = async () => {
-      try {
-        const res = await axios.get("/customer");
-        setCustomers(res.data);
-      } catch (err) {
-        console.error("Error fetching customers:", err);
-      }
-    };
-    fetchAllCustomers();
+    fetchCustomers();
   }, []);
+
+  const fetchCustomers = async () => {
+    try {
+      const [customersResponse, bidsCountResponse] = await Promise.all([
+        axios.get("/customer"),
+        axios.get("/customer/bid"),
+      ]);
+
+      const customersData = customersResponse.data.map((customer) => {
+        const bidCount = bidsCountResponse.data.find(
+          (bid) => bid.customersId === customer.id // Ensure property name matches backend
+        );
+        return {
+          ...customer,
+          bidCount: bidCount ? bidCount.bidCount : 0,
+        };
+      });
+
+      setCustomers(customersData);
+    } catch (err) {
+      console.error(
+        "Error fetching customers:",
+        err.response?.data?.error || err.message
+      );
+    }
+  };
 
   const handleEdit = (index, data) => {
     setEditingIndex(index);
@@ -51,6 +70,7 @@ const Customer = () => {
       phoneNumber: "",
       email: "",
       address: "",
+      status: "", // Reset status field
     });
     setErrors({});
   };
@@ -82,7 +102,10 @@ const Customer = () => {
       setCustomers(updatedCustomers);
       handleCancel();
     } catch (err) {
-      console.error("Error saving customer:", err);
+      console.error(
+        "Error saving customer:",
+        err.response?.data?.error || err.message
+      );
     }
   };
 
@@ -92,9 +115,9 @@ const Customer = () => {
     setErrors({ ...errors, [e.target.name]: undefined });
   };
 
-  const filteredCustomers = customers.filter((data) => {
-    return data?.id?.toString().includes(search);
-  });
+  const filteredCustomers = customers.filter((data) =>
+    data?.id?.toString().includes(search)
+  );
 
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -111,6 +134,7 @@ const Customer = () => {
       phoneNumber: "",
       email: "",
       address: "",
+      status: "", // Initialize status field for new customer
     });
   };
 
@@ -128,6 +152,7 @@ const Customer = () => {
           <thead>
             <tr>
               <th>פעולות</th>
+              <th>מספר הצעות</th>
               <th>כתובת</th>
               <th>מייל</th>
               <th>טלפון</th>
@@ -156,143 +181,128 @@ const Customer = () => {
                       />
                     </>
                   ) : (
-                    <>
-                      <img
-                        src={editIcon}
-                        alt="Edit"
-                        className={classes.icon}
-                        onClick={() => handleEdit(i, data)}
-                      />
-                    </>
+                    <img
+                      src={editIcon}
+                      alt="Edit"
+                      className={classes.icon}
+                      onClick={() => handleEdit(i, data)}
+                    />
                   )}
                 </td>
+                <td>{data.bidCount}</td>
                 <td>
                   {editingIndex === i ? (
-                    <>
-                      <input
-                        type="text"
-                        name="address"
-                        value={formData.address}
-                        onChange={handleChange}
-                        placeholder="כתובת"
-                        className={`form-control ${
-                          errors.address ? "is-invalid" : ""
-                        }`}
-                      />
-                      {errors.address && (
-                        <div className="invalid-feedback">{errors.address}</div>
-                      )}
-                    </>
+                    <input
+                      type="text"
+                      name="address"
+                      value={formData.address}
+                      onChange={handleChange}
+                      placeholder="כתובת"
+                      className={`form-control ${
+                        errors.address ? "is-invalid" : ""
+                      }`}
+                    />
                   ) : (
                     data.address
                   )}
+                  {errors.address && (
+                    <div className="invalid-feedback">{errors.address}</div>
+                  )}
                 </td>
                 <td>
                   {editingIndex === i ? (
-                    <>
-                      <input
-                        type="text"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        placeholder="מייל"
-                        className={`form-control ${
-                          errors.email ? "is-invalid" : ""
-                        }`}
-                      />
-                      {errors.email && (
-                        <div className="invalid-feedback">{errors.email}</div>
-                      )}
-                    </>
+                    <input
+                      type="text"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="מייל"
+                      className={`form-control ${
+                        errors.email ? "is-invalid" : ""
+                      }`}
+                    />
                   ) : (
                     data.email
                   )}
+                  {errors.email && (
+                    <div className="invalid-feedback">{errors.email}</div>
+                  )}
                 </td>
                 <td>
                   {editingIndex === i ? (
-                    <>
-                      <input
-                        type="text"
-                        name="phoneNumber"
-                        value={formData.phoneNumber}
-                        onChange={handleChange}
-                        placeholder="טלפון"
-                        className={`form-control ${
-                          errors.phoneNumber ? "is-invalid" : ""
-                        }`}
-                      />
-                      {errors.phoneNumber && (
-                        <div className="invalid-feedback">
-                          {errors.phoneNumber}
-                        </div>
-                      )}
-                    </>
+                    <input
+                      type="text"
+                      name="phoneNumber"
+                      value={formData.phoneNumber}
+                      onChange={handleChange}
+                      placeholder="טלפון"
+                      className={`form-control ${
+                        errors.phoneNumber ? "is-invalid" : ""
+                      }`}
+                    />
                   ) : (
                     data.phoneNumber
                   )}
+                  {errors.phoneNumber && (
+                    <div className="invalid-feedback">{errors.phoneNumber}</div>
+                  )}
                 </td>
                 <td>
                   {editingIndex === i ? (
-                    <>
-                      <input
-                        type="text"
-                        name="family"
-                        value={formData.family}
-                        onChange={handleChange}
-                        placeholder="שם משפחה"
-                        className={`form-control ${
-                          errors.family ? "is-invalid" : ""
-                        }`}
-                      />
-                      {errors.family && (
-                        <div className="invalid-feedback">{errors.family}</div>
-                      )}
-                    </>
+                    <input
+                      type="text"
+                      name="family"
+                      value={formData.family}
+                      onChange={handleChange}
+                      placeholder="שם משפחה"
+                      className={`form-control ${
+                        errors.family ? "is-invalid" : ""
+                      }`}
+                    />
                   ) : (
                     data.family
                   )}
-                </td>
-                <td>
-                  {editingIndex === i ? (
-                    <>
-                      <input
-                        type="text"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        placeholder="שם"
-                        className={`form-control ${
-                          errors.name ? "is-invalid" : ""
-                        }`}
-                      />
-                      {errors.name && (
-                        <div className="invalid-feedback">{errors.name}</div>
-                      )}
-                    </>
-                  ) : (
-                    data.name
+                  {errors.family && (
+                    <div className="invalid-feedback">{errors.family}</div>
                   )}
                 </td>
                 <td>
                   {editingIndex === i ? (
-                    <>
-                      <input
-                        type="text"
-                        name="id"
-                        value={formData.id}
-                        onChange={handleChange}
-                        placeholder="ת.ז"
-                        className={`form-control ${
-                          errors.id ? "is-invalid" : ""
-                        }`}
-                        disabled={formData.id !== ""}
-                      />
-                      {errors.id && (
-                        <div className="invalid-feedback">{errors.id}</div>
-                      )}
-                    </>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      placeholder="שם"
+                      className={`form-control ${
+                        errors.name ? "is-invalid" : ""
+                      }`}
+                    />
+                  ) : (
+                    data.name
+                  )}
+                  {errors.name && (
+                    <div className="invalid-feedback">{errors.name}</div>
+                  )}
+                </td>
+                <td>
+                  {editingIndex === i ? (
+                    <input
+                      type="text"
+                      name="id"
+                      value={formData.id}
+                      onChange={handleChange}
+                      placeholder="ת.ז"
+                      className={`form-control ${
+                        errors.id ? "is-invalid" : ""
+                      }`}
+                      disabled={editingIndex === customers.length}
+                    />
                   ) : (
                     data.id
+                  )}
+                  {errors.id && (
+                    <div className="invalid-feedback">{errors.id}</div>
                   )}
                 </td>
               </tr>
@@ -313,6 +323,7 @@ const Customer = () => {
                     onClick={handleCancel}
                   />
                 </td>
+                <td>{formData.bidCount || 0}</td>
                 <td>
                   <input
                     type="text"
@@ -412,7 +423,9 @@ const Customer = () => {
             <button
               key={number + 1}
               onClick={() => paginate(number + 1)}
-              className="page-link"
+              className={`page-link ${
+                currentPage === number + 1 ? "active" : ""
+              }`}
             >
               {number + 1}
             </button>

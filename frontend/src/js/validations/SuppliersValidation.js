@@ -19,7 +19,6 @@ function SupplierValidation(values) {
  } else if (!contact_pattern.test(values.address)) {
    errors.address = "מקום מגורים צריך להיות בנוי רק מאותיות עבריות ורווחים";
  }
-
   return errors;
 }
 
