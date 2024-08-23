@@ -1,3 +1,5 @@
+
+// export default Customer;
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import SearchBar from "./searchBar/SearchBar";
@@ -32,9 +34,12 @@ const Customer = () => {
   const fetchCustomers = async () => {
     try {
       const [customersResponse, bidsCountResponse] = await Promise.all([
-        axios.get("/customer"),
+        axios.get("/customers"),
         axios.get("/customer/bid"),
       ]);
+
+      console.log("Customers Response:", customersResponse.data); // בדיקת נתונים
+      console.log("Bids Count Response:", bidsCountResponse.data); // בדיקת נתונים
 
       const customersData = customersResponse.data.map((customer) => {
         const bidCount = bidsCountResponse.data.find(
@@ -47,6 +52,7 @@ const Customer = () => {
       });
 
       setCustomers(customersData);
+      console.log("Processed Customers Data:", customersData); // בדיקת נתונים מעובדים
     } catch (err) {
       console.error(
         "Error fetching customers:",
@@ -59,6 +65,7 @@ const Customer = () => {
     setEditingIndex(index);
     setFormData({ ...data });
     setErrors({});
+    console.log("Editing customer at index:", index); // בדיקת עריכה
   };
 
   const handleCancel = () => {
@@ -73,12 +80,14 @@ const Customer = () => {
       status: "", // Reset status field
     });
     setErrors({});
+    console.log("Cancelled editing"); // בדיקת ביטול עריכה
   };
 
   const handleSave = async () => {
     const validationErrors = Validation(formData);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      console.log("Validation Errors:", validationErrors); // בדיקת שגיאות
       return;
     }
 
@@ -101,6 +110,7 @@ const Customer = () => {
 
       setCustomers(updatedCustomers);
       handleCancel();
+      console.log("Customer saved successfully"); // בדיקת שמירה מוצלחת
     } catch (err) {
       console.error(
         "Error saving customer:",
@@ -119,6 +129,8 @@ const Customer = () => {
     data?.id?.toString().includes(search)
   );
 
+  console.log("Filtered Customers:", filteredCustomers); // בדיקת תוצאות מסוננות
+
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = filteredCustomers.slice(indexOfFirstRow, indexOfLastRow);
@@ -136,6 +148,7 @@ const Customer = () => {
       address: "",
       status: "", // Initialize status field for new customer
     });
+    console.log("Adding new customer"); // בדיקת הוספת לקוח חדש
   };
 
   return (

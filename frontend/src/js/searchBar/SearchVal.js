@@ -14,9 +14,6 @@ const SearchVal = ({ searchVal, setSearchVal }) => {
         placeholder="חפש"
         value={searchVal}
       />
-      <button type="button" onClick={() => setSearchVal(searchVal)}>
-        חפש
-      </button>
     </div>
   );
 };

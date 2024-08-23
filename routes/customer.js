@@ -1,73 +1,30 @@
-// //Hadeel and Rabeaa
 
-// const express = require("express");
-
-// const db = require("../dbcon"); // dbcon is a module for database connection
-
-// const router = express.Router();
-
-// // Route to fetch all customers
-// router.get("/customer", (req, res) => {
-//   const q = "SELECT * FROM`customers`";
-//   db.query(q, (err, data) => {
-//     if (err) {
-//       console.log(err);
-//       return res.json(err);
-//     }
-//     return res.json(data);
-//   });
-// });
-// // Route to create a new customers
-// router.post("/createCustomer", (req, res) => {
-//   let { id, name, family, phoneNumber, email, address } = req.body;
-//   const q = `
-//       INSERT INTO profile (id, name, family, phoneNumber, email, address) 
-//       VALUES (?, ?, ?, ?,?,?)
-//       ON DUPLICATE KEY UPDATE 
-//         name =VALUES(name), 
-//         family = VALUES(family),
-//         phoneNumber = VALUES(phoneNumber),
-//         email = VALUES(email),
-//         address = VALUES(address),
-//     `;
-//   db.query(q,
-//     [id, name, family, phoneNumber, email, address],
-//     (err, result) => {
-//       if (err) {
-//         console.log(err);
-//       } else {
-//         res.json("You have added successfully!");
-//       }
-//     }
-//   );
-// });
-
-
-// // Route to update a customer by id
-// router.put("/customer/:id", (req, res) => {
-//   const sql =
-//     "UPDATE `customers` SET `name`=?,`family`=?,`phoneNumber`=?,`email`=?,`address`=? WHERE id = ?";
-//   const values = [
-//     req.body.name,
-//     req.body.family,
-//     req.body.phoneNumber,
-//     req.body.email,
-//     req.body.address,
-//   ];
-//   const type = req.params.id;
-//   db.query(sql, [...values, type], (err, data) => {
-//     if (err) return res.json("Error");
-//     return res.json(data); // Return result of the update operation
-//   });
-// });
-
-// module.exports = router;
 const express = require("express");
-const db = require("../dbcon"); // dbcon is a module for database connection
+const db = require("../dbcon"); // חיבור לבסיס נתונים
 const router = express.Router();
 
-// Route to fetch all customers
-router.get("/customer", (req, res) => {
+// שליפת לקוח לפי ID
+router.get("/customer1/:id", (req, res) => {
+  const id = req.params.id;
+  console.log(`Fetching customer with ID: ${id}`);
+
+  const q = "SELECT * FROM `customers` WHERE id = ?";
+  db.query(q, [id], (err, data) => {
+    if (err) {
+      console.error(`Database error: ${err.message}`);
+      return res.status(500).json({ error: "Database error" });
+    }
+    if (data.length === 0) {
+      console.log(`Customer with ID ${id} not found`);
+      return res.status(404).json({ error: "Customer not found" });
+    }
+    console.log(`Customer found: ${JSON.stringify(data[0])}`);
+    return res.status(200).json(data[0]);
+  });
+});
+
+// שליפת כל הלקוחות
+router.get("/customers", (req, res) => {
   const q = "SELECT * FROM `customers`";
   db.query(q, (err, data) => {
     if (err) {
@@ -78,7 +35,7 @@ router.get("/customer", (req, res) => {
   });
 });
 
-// Route to create a new customer
+// הוספת לקוח חדש
 router.post("/createCustomer", (req, res) => {
   const { id, name, family, phoneNumber, email, address } = req.body;
 
@@ -106,7 +63,7 @@ router.post("/createCustomer", (req, res) => {
   });
 });
 
-// Route to update a customer by id
+// עדכון פרטי לקוח לפי ID
 router.put("/customer/:id", (req, res) => {
   const { name, family, phoneNumber, email, address } = req.body;
   const id = req.params.id;

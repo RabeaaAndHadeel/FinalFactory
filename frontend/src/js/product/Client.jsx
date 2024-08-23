@@ -1,148 +1,166 @@
-// import React from 'react'
 
-// export default function Client(formData,setFormData) {
-//   return (
-//     <div className="form-container">
-//        <div className="form-group">
-//             <label htmlFor='id'> הכניס ת.ז לקוח :</label>
-//             <input 
-//               type="text" 
-//               id="id" 
-//               placeholder="Enter your id" autoComplete="off" 
-//               value={formData.id}
-//               onChange={(e)=>{
-//                 setFormData({...formData,id:e.target.value})
-//               }}
-//             />
-//           </div>
-//           <div className="form-group">
-//             <label htmlFor='name'> הכניס שם לקוח: </label>
-//             <input 
-//               type="text" 
-//               id="name" 
-//               placeholder="Enter your name" autoComplete="off" 
-//               value={formData.name}
-//               onChange={(e)=>{
-//                 setFormData({...formData,name:e.target.value})
-//               }}
-//             />
-//           </div>
-//           <div className="form-group">
-//             <label htmlFor='family'> הכניס שם משפחה:</label>
-//             <input 
-//               type="text" 
-//               id="family" 
-//               placeholder="Enter your family" autoComplete="off" 
-//               value={formData.family}
-//                onChange={(e)=>{
-//                 setFormData({...formData,family:e.target.value})
-//               }}
-//             />
-//           </div>
-//           <div className="form-group">
-//             <label htmlFor='address'> הכניס כתובת:</label>
-//             <input 
-//               type="text" 
-//               id="address" 
-//               placeholder="Enter your address" autoComplete="off" 
-//               value={formData.address}
-//                onChange={(e)=>{
-//                 setFormData({...formData,address:e.target.value})
-//               }}
-//             />
-//           </div>
-//           <div className="form-group">
-//             <label htmlFor='phone'> הכניס מספר טלפון:</label>
-//             <input 
-//               type="text" 
-//               id="phone" 
-//               placeholder="Enter your phone" autoComplete="off" 
-//               value={formData.phone}
-//                onChange={(e)=>{
-//                 setFormData({...formData,phone:e.target.value})
-//               }}
-//             />
-//           </div>
-//           <div className="form-group">
-//             <label htmlFor='email'> הכניס מייל:</label>
-//             <input 
-//               type="text" 
-//               id="email" 
-//               placeholder="Enter your email" autoComplete="off" 
-//               value={formData.email}
-//                onChange={(e)=>{
-//                 setFormData({...formData,email:e.target.value})
-//               }}
-//             />
-//           </div>
-//     </div>
-//   )
-// }
-import React from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import Validation from '../validations/CustomerValidation';
 
-export default function Client({ formData, setFormData }) {
+export default function Client({ formData, setFormData ,handleSave }) { 
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const checkIfCustomerExists = async (id) => {
+    try {
+      const response = await axios.get(`/customer1/${id}`);
+      console.log('Customer exists, data:', response.data); // Debugging log
+      return response.data;
+    } catch (err) {
+      if (err.response && err.response.status === 404) {
+        console.log('Customer does not exist.'); // Debugging log
+        return null;
+      } else {
+        console.error("Error checking if customer exists:", err.message);
+        return null;
+      }
+    }
+  };
+
+  const handleIdChange = async (e) => {
+    const id = e.target.value;
+    setFormData({ ...formData, id });
+    setErrors({ ...errors, id: undefined });
+
+    if (id.length === 9) { // Proceed only if ID is 9 characters
+      setLoading(true);
+      try {
+        const existingCustomer = await checkIfCustomerExists(id);
+        if (existingCustomer) {
+          console.log('Existing customer data:', existingCustomer); // Debugging log
+          setFormData(existingCustomer);
+          setSuccessMessage('לקוח קיים נטען בהצלחה');
+        } else {
+          setSuccessMessage('לקוח אינו קיים בבקשה להוסיף אותו');
+        }
+      } catch (err) {
+        console.error('Error loading customer data:', err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+   handleSave = async () => {
+    const validationErrors = Validation(formData);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const { id } = formData;
+      if (id.length === 9) {
+        const existingCustomer = await checkIfCustomerExists(id);
+
+        if (existingCustomer) {
+          const res = await axios.put(`/customer/${id}`, formData); // Update existing customer
+          setSuccessMessage('לקוח עודכן בהצלחה');
+        } else {
+          const res = await axios.post("/createCustomer", formData); // Create new customer
+          setSuccessMessage('לקוח נוצר בהצלחה');
+        }
+      } else {
+        setErrors({ ...errors, id: 'ID must be 9 characters long' });
+      }
+    } catch (err) {
+      console.error("Error saving or fetching customer:", err.response?.data?.error || err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: undefined });
+  };
+
   return (
     <div className="form-container">
+      {loading && <p>Loading...</p>}
+      {successMessage && <p className="success-message">{successMessage}</p>}
       <div className="form-group">
-        <label htmlFor='id'> הכניס ת.ז לקוח :</label>
-        <input 
-          type="text" 
-          id="id" 
-          placeholder="Enter your id" autoComplete="off" 
+        <label htmlFor="id">ת.ז לקוח:</label>
+        <input
+          type="text"
+          id="id"
+          name="id"
+          placeholder="הכנס ת.ז"
           value={formData.id}
-          onChange={(e) => setFormData({ ...formData, id: e.target.value })}
+          onChange={handleIdChange}
         />
+        {errors.id && <span className="error">{errors.id}</span>}
       </div>
       <div className="form-group">
-        <label htmlFor='name'> הכניס שם לקוח: </label>
-        <input 
-          type="text" 
-          id="name" 
-          placeholder="Enter your name" autoComplete="off" 
+        <label htmlFor="name">שם לקוח:</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="הכנס שם"
           value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          onChange={handleChange}
         />
+        {errors.name && <span className="error">{errors.name}</span>}
       </div>
       <div className="form-group">
-        <label htmlFor='family'> הכניס שם משפחה:</label>
-        <input 
-          type="text" 
-          id="family" 
-          placeholder="Enter your family" autoComplete="off" 
+        <label htmlFor="family">שם משפחה:</label>
+        <input
+          type="text"
+          id="family"
+          name="family"
+          placeholder="הכנס שם משפחה"
           value={formData.family}
-          onChange={(e) => setFormData({ ...formData, family: e.target.value })}
+          onChange={handleChange}
         />
+        {errors.family && <span className="error">{errors.family}</span>}
       </div>
       <div className="form-group">
-        <label htmlFor='address'> הכניס כתובת:</label>
-        <input 
-          type="text" 
-          id="address" 
-          placeholder="Enter your address" autoComplete="off" 
+        <label htmlFor="address">כתובת:</label>
+        <input
+          type="text"
+          id="address"
+          name="address"
+          placeholder="הכנס כתובת"
           value={formData.address}
-          onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+          onChange={handleChange}
         />
+        {errors.address && <span className="error">{errors.address}</span>}
       </div>
       <div className="form-group">
-        <label htmlFor='phone'> הכניס מספר טלפון:</label>
-        <input 
-          type="text" 
-          id="phone" 
-          placeholder="Enter your phone" autoComplete="off" 
-          value={formData.phone}
-          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+        <label htmlFor="phoneNumber">מספר טלפון:</label>
+        <input
+          type="text"
+          id="phoneNumber"
+          name="phoneNumber"
+          placeholder="הכנס מספר טלפון"
+          value={formData.phoneNumber}
+          onChange={handleChange}
         />
+        {errors.phoneNumber && <span className="error">{errors.phoneNumber}</span>}
       </div>
       <div className="form-group">
-        <label htmlFor='email'> הכניס מייל:</label>
-        <input 
-          type="text" 
-          id="email" 
-          placeholder="Enter your email" autoComplete="off" 
+        <label htmlFor="email">מייל:</label>
+        <input
+          type="text"
+          id="email"
+          name="email"
+          placeholder="הכנס מייל"
           value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          onChange={handleChange}
         />
+        {errors.email && <span className="error">{errors.email}</span>}
       </div>
+      <button onClick={handleSave}>Save</button>
     </div>
   );
 }

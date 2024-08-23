@@ -7,8 +7,9 @@ import closeIcon from "../img/icon/close.png";
 import addIcon from "../img/icon/add.png";
 import classes from "../css/table.module.css";
 import BidValidation from "../js/validations/BidValidation";
-
+import { Link, useNavigate } from "react-router-dom"; 
 const Bid = () => {
+    const navigate = useNavigate();
   const [bid, setBid] = useState([]);
   const [message, setMessage] = useState({});
   const [search, setSearch] = useState("");
@@ -67,6 +68,7 @@ const Bid = () => {
       status: 0,
     });
     setErrors({});
+
   };
 
   const handleSave = async () => {
@@ -178,6 +180,8 @@ const Bid = () => {
       date: "",
       status: 1,
     });
+    navigate("/product"); 
+
   };
 
   return (
@@ -240,23 +244,49 @@ const Bid = () => {
                       />
                     </>
                   ) : (
+                    <div>
                     <img
                       src={editIcon}
                       alt="Edit"
                       className={classes.icon}
                       onClick={() => handleEdit(index, quote)}
                     />
+                     {quote.status === 1 ? (
+                        <button
+                          className="btn btn-link p-0"
+                          onClick={() => handleActivateTable(quote)}
+                        >
+                          שנה סטטוס
+                        </button>
+                      ) : (
+                        <button
+                          className="btn btn-link p-0"
+                          onClick={() => handleActivateTable(quote)}
+                        >
+                          שנה סטטוס
+                        </button>
+                      )}
+                   </div>
                   )}
                 </td>
-                <td>
-                  <button
-                    className={`btn ${
-                      quote.status === 1 ? "btn-success" : "btn-danger"
-                    }`}
-                    onClick={() => handleActivateTable(quote)}
-                  >
-                    {quote.status === 1 ? "Active" : "Inactive"}
-                  </button>
+                  <td>
+                  {editingIndex === index ? (
+                    <>
+                      <input
+                        type="text"
+                        name="status"
+                        value={formData.status}
+                        onChange={handleChange}
+                        placeholder="סטטוס"
+                        className="form-control"
+                        disabled
+                      />
+                    </>
+                  ) : quote.status === 1 ? (
+                    "פעיל"
+                  ) : (
+                    "לא פעיל"
+                  )}
                 </td>
                 <td>
                   {editingIndex === index ? (

@@ -27,7 +27,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchAllProfiles = async () => {
       try {
-        const res = await axios.get("/profile");
+        const res = await axios.get("/profiles");
         setProfiles(res.data);
       } catch (err) {
         console.log(err);

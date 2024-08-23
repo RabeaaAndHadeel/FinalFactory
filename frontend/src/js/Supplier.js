@@ -30,28 +30,15 @@ const Supplier = () => {
   }, []);
 
   const fetchSuppliers = async () => {
-    try {
-      // Fetch suppliers with orderCount
-      const [suppliersResponse, ordersCountResponse] = await Promise.all([
-        axios.get("/supplier"),
-        axios.get("/supplier/orders"), // Assuming this endpoint exists to get order counts
-      ]);
+  try {
+    const suppliersResponse = await axios.get("/suppliers");
+    setSuppliers(suppliersResponse.data);
+  } catch (error) {
+    console.error("Error fetching suppliers:", error);
+  }
+};
 
-      const suppliersData = suppliersResponse.data.map((supplier) => {
-        const orderCount = ordersCountResponse.data.find(
-          (order) => order.supplierId === supplier.id
-        );
-        return {
-          ...supplier,
-          orderCount: orderCount ? orderCount.orderCount : 0,
-        };
-      });
 
-      setSuppliers(suppliersData);
-    } catch (error) {
-      console.error("Error fetching suppliers:", error);
-    }
-  };
   const handleSendEmail = async () => {
     const attachments = [
       {
@@ -104,7 +91,7 @@ const Supplier = () => {
 
       if (editingIndex !== null && editingIndex < suppliers.length) {
         // Update existing supplier
-        endpoint = `/updateSupplier/${formData.id}`;
+        endpoint = `/supplier/${formData.id}`;
         await axios.put(endpoint, formData);
         updatedSuppliers = suppliers.map((item, index) =>
           index === editingIndex ? formData : item

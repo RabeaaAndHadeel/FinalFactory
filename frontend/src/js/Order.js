@@ -6,8 +6,9 @@ import saveIcon from "../img/icon/save.png";
 import closeIcon from "../img/icon/close.png";
 import addIcon from "../img/icon/add.png";
 import classes from "../css/table.module.css";
+import { useNavigate } from "react-router-dom"; 
 
-const Order = () => {
+const Order = () => {   
   const [orders, setOrders] = useState([]);
   const [search, setSearch] = useState("");
   const [editingIndex, setEditingIndex] = useState(null);
@@ -19,10 +20,10 @@ const Order = () => {
     orderNumber: "",
     status: 1,
   });
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [displayActiveOnly, setDisplayActiveOnly] = useState(true);
   const [message, setMessage] = useState(""); // Added for activation messages
-  const [supplierOrders, setSupplierOrders] = useState({}); // State to hold supplier order counts
   const rowsPerPage = 7;
 
   useEffect(() => {
@@ -30,22 +31,8 @@ const Order = () => {
       try {
         const response = await axios.get("/order");
         setOrders(response.data);
-
-        const supplierOrdersResponse = await axios.get("/supplier/orders");
-        setSupplierOrders(supplierOrdersResponse.data);
       } catch (error) {
         console.error("Error fetching orders:", error);
-        if (error.response) {
-          console.error("Server responded with status:", error.response.status);
-          console.error("Response data:", error.response.data);
-          // Handle specific errors or show appropriate message to users
-        } else if (error.request) {
-          console.error("No response received:", error.request);
-          // Handle if no response received from server
-        } else {
-          console.error("Error setting up the request:", error.message);
-          // Handle other errors in setting up the request
-        }
       }
     };
 
@@ -66,8 +53,17 @@ const Order = () => {
 
   const handleSave = async () => {
     try {
-      const res = await axios.post("/createOrder", formData);
-      setOrders([...orders, res.data]);
+      if (editingIndex !== null) {
+        const updatedOrder = { ...formData };
+        await axios.put(`/order/${formData.orderNumber}`, updatedOrder);
+        const updatedOrders = orders.map((order, index) =>
+          index === editingIndex ? updatedOrder : order
+        );
+        setOrders(updatedOrders);
+      } else {
+        const res = await axios.post("/createOrder", formData);
+        setOrders([...orders, res.data]);
+      }
       handleCancel();
     } catch (err) {
       console.error("Error saving order:", err);
@@ -80,14 +76,14 @@ const Order = () => {
 
   const handleActivateOrder = async (order) => {
     try {
+      const updatedStatus = order.status === 1 ? 0 : 1;
       const response = await axios.put(`/order/${order.orderNumber}`, {
-        status: order.status === 1 ? 0 : 1, // Toggle status
+        ...order,
+        status: updatedStatus,
       });
       setOrders(
         orders.map((o) =>
-          o.orderNumber === order.orderNumber
-            ? { ...o, status: response.data.status }
-            : o
+          o.orderNumber === order.orderNumber ? { ...o, status: updatedStatus } : o
         )
       );
       setMessage("Order status updated successfully!");
@@ -126,15 +122,16 @@ const Order = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleAddOrder = () => {
-    setEditingIndex(orders.length); // Start editing new row
+    setEditingIndex(orders.length); // Prepare to add a new order
     setFormData({
       count: "",
       profileType: "",
       customersId: "",
       supplierId: "",
       orderNumber: "",
-      status: 1, // Initialize status
+      status: 1,
     });
+    navigate("/orderinfo");
   };
 
   return (
@@ -152,9 +149,14 @@ const Order = () => {
               <option value="all">הכל</option>
             </select>
           </div>
-          <SearchBar onChange={(e) => setSearch(e.target.value)} />
+          <SearchBar searchVal={search} setSearchVal={setSearch} />
         </div>
-        <table className="table table-striped table-hover" dir="rtl">
+        {message && (
+          <div className={`alert alert-${message.includes('success') ? 'success' : 'danger'}`}>
+            {message}
+          </div>
+        )}
+        <table className={`table ${classes.table}`} dir="rtl">
           <thead>
             <tr>
               <th>מספר הזמנה</th>
@@ -175,21 +177,7 @@ const Order = () => {
                 <td>{order.supplierId}</td>
                 <td>{order.count}</td>
                 <td>
-                  {order.status === 1 ? (
-                    <button
-                      className="btn btn-success"
-                      onClick={() => handleActivateOrder(order)}
-                    >
-                      פעיל
-                    </button>
-                  ) : (
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => handleActivateOrder(order)}
-                    >
-                      לא פעיל
-                    </button>
-                  )}
+                  {order.status === 1 ? "פעיל" : "לא פעיל"}
                 </td>
                 <td>
                   {editingIndex === index ? (
@@ -210,18 +198,45 @@ const Order = () => {
                       </button>
                     </>
                   ) : (
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => setEditingIndex(index)}
-                    >
-                      <img src={editIcon} alt="Edit" className={classes.icon} />
-                    </button>
+                    <div>
+                      <img
+                        src={editIcon}
+                        alt="Edit"
+                        className={classes.icon}
+                        onClick={() => {
+                          setEditingIndex(index);
+                          setFormData(order); // Load selected order into form
+                        }}
+                      />
+                      <button
+                        className="btn btn-link p-0"
+                        onClick={() => handleActivateOrder(order)}
+                      >
+                        שנה סטטוס
+                      </button>
+                    </div>
                   )}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+        <nav>
+          <ul className="pagination justify-content-center">
+            {Array.from({
+              length: Math.ceil(filteredOrders.length / rowsPerPage),
+            }).map((_, index) => (
+              <li key={index} className="page-item">
+                <button
+                  onClick={() => paginate(index + 1)}
+                  className="page-link"
+                >
+                  {index + 1}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
     </div>
   );

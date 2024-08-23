@@ -2,11 +2,10 @@ const express = require("express");
 const db = require("../dbcon"); // dbcon is a module for database connection
 const router = express.Router();
 
-// Middleware to parse JSON bodies
-router.use(express.json());
 
 // Route to fetch all suppliers
-router.get("/supplier", (req, res) => {
+router.get("/suppliers", (req, res) => {
+  // Changed route to /suppliers
   const q = "SELECT * FROM `suppliers`";
   db.query(q, (err, data) => {
     if (err) {
@@ -17,8 +16,30 @@ router.get("/supplier", (req, res) => {
   });
 });
 
+// Route to fetch a single supplier by ID
+router.get("/supplier/:id", (req, res) => {
+  // Changed route to /suppliers/:id
+  const id = req.params.id;
+  console.log(`Fetching supplier with ID: ${id}`);
+
+  const q = "SELECT * FROM `suppliers` WHERE id = ?";
+  db.query(q, [id], (err, data) => {
+    if (err) {
+      console.error(`Database error: ${err.message}`);
+      return res.status(500).json({ error: "Database error" });
+    }
+    if (data.length === 0) {
+      console.log(`Supplier with ID ${id} not found`);
+      return res.status(404).json({ error: "Supplier not found" });
+    }
+    console.log(`Supplier found: ${JSON.stringify(data[0])}`);
+    return res.status(200).json(data[0]);
+  });
+});
+
 // Route to create a new supplier
 router.post("/createSupplier", (req, res) => {
+  // Changed route to /suppliers
   const { name, id, address, contact, email, phoneNumber } = req.body;
 
   const sql =
@@ -36,27 +57,12 @@ router.post("/createSupplier", (req, res) => {
   );
 });
 
-// Route to delete a profile by id
-router.delete("/supplier/:id", (req, res) => {
-  const sql = "DELETE FROM `suppliers` WHERE id = ?";
-  const id = req.params.id;
 
-  db.query(sql, [id], (err, data) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Failed to delete supplier" });
-    }
-    if (data.affectedRows === 0) {
-      return res.status(404).json({ error: "Supplier not found" });
-    }
-    return res.json({ message: "Supplier deleted successfully" });
-  });
-});
-
-// Route to update a profile by id
-router.put("/updateSupplier/:id", (req, res) => {
+// Route to update a supplier by id
+router.put("/supplier/:id", (req, res) => {
+  // Changed route to /suppliers/:id
   const sql =
-    "UPDATE `suppliers` SET name = ?, address = ?, contact = ?, email = ?, phoneNumber = ? WHERE id = ?";
+    `UPDATE suppliers SET name = ?, address = ?, contact = ?, email = ?, phoneNumber = ? WHERE id = ?`;
   const { name, address, contact, email, phoneNumber } = req.body;
   const id = req.params.id;
 

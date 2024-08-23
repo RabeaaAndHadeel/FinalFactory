@@ -45,5 +45,4 @@ router.put("/updateFactory/:id", async (req, res) => {
     res.json("Error");
   }
 });
-
 module.exports = router;

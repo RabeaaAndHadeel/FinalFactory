@@ -1,5 +1,5 @@
-import React from 'react';
-import '../product/TableProduct.css';
+import React from "react";
+import "../product/TableProduct.css";
 
 export default function TableOrders({ list }) {
   return (
@@ -11,7 +11,7 @@ export default function TableOrders({ list }) {
         </div>
       </div>
       <div className="table-body">
-        {list.map(({ foamType,quantity},i) => (
+        {list.map(({ foamType, quantity }, i) => (
           <div className="table-row" key={i}>
             <div className="table-cell">{foamType}</div>
             <div className="table-cell">{quantity}</div>

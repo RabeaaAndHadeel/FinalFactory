@@ -52,3 +52,50 @@
 .table-row .table-cell:first-child {
   text-align: right;
 }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .table-row,
+  .table-header {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .table-cell {
+    text-align: left;
+    padding: 10px 5px;
+  }
+
+  .table-header .table-cell {
+    font-size: 13px;
+    padding: 10px 5px;
+  }
+
+  .table-row .table-cell {
+    font-size: 12px;
+    padding: 8px 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .table-row,
+  .table-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .table-cell {
+    text-align: left;
+    padding: 10px 5px;
+  }
+
+  .table-header .table-cell {
+    font-size: 12px;
+    padding: 8px 4px;
+  }
+
+  .table-row .table-cell {
+    font-size: 11px;
+    padding: 6px 4px;
+  }
+}
