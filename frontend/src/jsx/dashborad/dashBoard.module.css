@@ -1,0 +1,64 @@
+/* Container for the dashboard, setting width, layout, and appearance */
+.dashboardContainer {
+  width: 65%; /* Set the container width to 65% of the page width */
+  display: flex; /* Use flexbox for layout */
+  flex-direction: column; /* Arrange child elements in a vertical column */
+  align-items: flex-start; /* Align child elements to the start of the container */
+  color: #fff; /* Set text color to white */
+  padding: 20px; /* Add padding inside the container */
+  margin-left: 60px; /* Add left margin to create space around the container */
+  border-radius: 10px; /* Add rounded corners with a radius of 10px */
+}
+
+/* Title style for the dashboard, adjusting font size and alignment */
+.dashboardTitle {
+  font-size: 2em; /* Increase font size for the title */
+  color: white; /* Set title color to white */
+  margin-bottom: 20px; /* Add bottom margin to separate from the following content */
+  float: left; /* Float the title to the left */
+  font-weight: bolder; /* Make the title text bolder */
+  margin-left: 24rem; /* Add left margin to position the title appropriately */
+}
+
+/* Style for secondary headings (h2), making them bold */
+.h2 {
+  font-weight: bolder; /* Make h2 headings bolder */
+}
+
+/* Style for net promoter score section, setting background color and padding */
+.netPromoterScore {
+  background-color: #3b3b3b; /* Dark gray background color */
+  padding: 20px; /* Add padding inside the section */
+  margin-bottom: 20px; /* Add bottom margin to separate from the following content */
+  border-radius: 10px; /* Add rounded corners with a radius of 10px */
+  width: 100%; /* Set width to 100% of the parent container */
+  text-align: center; /* Center-align text inside the section */
+}
+
+/* Container for charts, adding borders, background, and padding */
+.chartContainer {
+  border: 6px solid white; /* White border with 6px thickness */
+  background: transparent; /* Transparent background */
+  backdrop-filter: blur(20px); /* Apply blur effect to the background */
+  padding: 20px; /* Add padding inside the container */
+  margin-bottom: 20px; /* Add bottom margin to separate from the following content */
+  border-radius: 10px; /* Add rounded corners with a radius of 10px */
+  width: 100%; /* Set width to 100% of the parent container */
+}
+
+/* Wrapper for chart elements, adjusting background color and padding */
+.chartWrapper {
+  background-color: rgb(56, 55, 55); /* Dark gray background color */
+  padding: 10px; /* Add padding inside the wrapper */
+  border-radius: 10px; /* Add rounded corners with a radius of 10px */
+}
+
+/* Style for h2 headings inside chart wrapper, setting color */
+h2 {
+  color: #ffce56; /* Bright yellow color for h2 headings */
+}
+
+/* Style for canvas elements inside chart wrapper, adding border radius */
+.chartWrapper canvas {
+  border-radius: 10px; /* Add rounded corners with a radius of 10px */
+}
