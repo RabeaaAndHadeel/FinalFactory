@@ -11,17 +11,29 @@ import SupplierData from "./pages/SupplierData";
 import Contactus from "./pages/Contactus";
 import OrderData from "./pages/OrderData";
 import CustomersData from "./pages/CustomersData";
-import ProductData from "./pages/ProductData";
+import QutationInfo from "./pages/QutationInfo";
 import Factory from "./pages/FactoryData";
-import Bid from "./pages/BidData";
+import QutationData from "./pages/QutationData";
+import QutationTable from "./pages/QutationTable";
 import Dashboard from "./pages/DashBoardData";
-import OrderInfo from "./pages/OrderInfo"
+import OrderInfo from "./pages/OrderInfo";
+import CalculationsInfo from "./pages/CalculationsInfo";
+import SketchComp from "./pages/SketchComp";
+import ShutterInfo from "./pages/ShutterInfo";
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/orderInfo" element={<OrderInfo />}></Route>
-        <Route path="/dashboard" element={<Dashboard />}></Route>
+        <Route path="/shutter" element={<ShutterInfo />} />
+        {/* Route for shutter page */}
+        <Route path="/sketch" element={<SketchComp />} />
+        {/* Route for sketch page */}
+        <Route path="/calculations" element={<CalculationsInfo />}></Route>
+        {/* Route for calculations page */}
+        <Route path="/orderInfo" element={<OrderInfo />}></Route>        
+        {/* Route for order page */}
+        <Route path="/dashboard" element={<Dashboard />}></Route>        
+        {/* Route for dashboard page */}
         <Route path="/login" element={<LoginData />}></Route>
         {/* Route for login page */}
         <Route path="/signup" element={<SignupData />}></Route>
@@ -40,14 +52,16 @@ function App() {
         {/* Route for order page */}
         <Route path="/customer" element={<CustomersData />}></Route>
         {/* Route for customer  page */}
-        <Route path="/product" element={<ProductData />}></Route>
-        {/* Route for customer  page */}
+        <Route path="/quotationInfo" element={<QutationInfo />}></Route>
+         {/* Route for quotation info page */}
+        <Route path="/qutationData" element={<QutationData />}></Route>
+         {/* Route for quotation data page */}
         <Route path="/contactus" element={<Contactus />}></Route>
         {/* Route for  contactus page */}
         <Route path="/factory" element={<Factory />}></Route>
-        {/* Route for  contactus page */}
-        <Route path="/bid" element={<Bid />}></Route>
-        {/* Route for  contactus page */}
+        {/* Route for  factory page */}
+        <Route path="/qutation" element={<QutationTable />}></Route>
+        {/* Route for  quotation page */}
       </Routes>
     </BrowserRouter>
   );

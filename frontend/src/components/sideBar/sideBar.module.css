@@ -1,99 +1,107 @@
+/* Sidebar styling */
 .sidebarRight {
-  position: fixed;
-  top: 0;
-  right: 0;
-  height: 100%;
-  width: 250px;
-  background-color: white;
-  color: black;
-  z-index: 1000;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  overflow-y: auto;
-  display: inline !important;
+  position: fixed; /* Fix position to the right of the viewport */
+  top: 0; /* Align to the top of the viewport */
+  right: 0; /* Align to the right edge */
+  height: 100%; /* Full height of the viewport */
+  width: 250px; /* Default width */
+  background-color: white; /* Background color */
+  color: black; /* Text color */
+  z-index: 1000; /* Ensure it's above other content */
+  padding: 20px; /* Padding inside the sidebar */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+  overflow-y: auto; /* Enable vertical scrolling if content overflows */
+  display: inline !important; /* Inline display, overriding other styles */
 }
 
-/* Responsive adjustments */
+/* Responsive adjustments for tablets */
 @media (max-width: 1024px) {
   .sidebarRight {
     width: 200px; /* Adjust width for tablets */
   }
 
   .sidebarRight .icon {
-    width: 25px;
+    width: 25px; /* Adjust icon size */
     height: 25px;
   }
 
   .arrowIcon {
-    width: 12px;
+    width: 12px; /* Adjust arrow icon size */
     height: 12px;
   }
 }
 
+/* Responsive adjustments for smaller tablets and larger mobile screens */
 @media (max-width: 768px) {
   .sidebarRight {
     width: 180px; /* Further reduce width for smaller tablets */
-    padding: 15px;
+    padding: 15px; /* Reduce padding */
   }
 
   .sidebarRight .icon {
-    width: 20px;
+    width: 20px; /* Adjust icon size */
     height: 20px;
   }
 
   .arrowIcon {
-    width: 10px;
+    width: 10px; /* Adjust arrow icon size */
     height: 10px;
   }
 }
 
+/* Responsive adjustments for mobile screens */
 @media (max-width: 480px) {
   .sidebarRight {
     width: 100%; /* Use full width for mobile screens */
-    height: auto;
+    height: auto; /* Auto height to fit content */
     position: relative; /* Change position to relative for better mobile handling */
-    padding: 10px;
+    padding: 10px; /* Reduce padding */
   }
 
   .sidebarRight .icon {
-    width: 18px;
+    width: 18px; /* Adjust icon size */
     height: 18px;
   }
 
   .arrowIcon {
-    width: 8px;
+    width: 8px; /* Adjust arrow icon size */
     height: 8px;
   }
   
   .sidebarRight .nav-link {
-    text-align: center;
-    padding: 10px;
+    text-align: center; /* Center text for mobile */
+    padding: 10px; /* Adjust padding */
   }
 
   .sidebarRight {
-    display: block;
+    display: block; /* Ensure block display for mobile */
   }
 }
 
+/* Navigation link styling */
 .sidebarRight .nav-link {
-  color: black !important;
+  color: black !important; /* Ensure link text color is black */
 }
 
+/* Hover effect for navigation links */
 .sidebarRight .nav-link:hover {
-  color: #007bff !important;
+  color: #007bff !important; /* Change color on hover */
 }
 
+/* Active link styling */
 .sidebarRight .active {
-  font-weight: bold;
+  font-weight: bold; /* Bold text for active link */
 }
 
+/* Icon styling */
 .sidebarRight .icon {
-  width: 30px;
-  height: 30px;
-  margin-right: 10px;
+  width: 30px; /* Default icon width */
+  height: 30px; /* Default icon height */
+  margin-right: 10px; /* Space between icon and text */
 }
 
+/* Arrow icon styling */
 .arrowIcon {
-  width: 15px;
-  height: 15px;
+  width: 15px; /* Default width */
+  height: 15px; /* Default height */
 }

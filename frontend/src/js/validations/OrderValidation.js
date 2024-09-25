@@ -25,6 +25,7 @@ function OrderValidation(values) {
   } else if (!typePattern.test(values.profileType)) {
     errors.profileType = "סוג מוצר צריך להכיל רק אותיות";
   }
+  //customer id validartion
   if (!values.customersId) {
     errors.customersId = "ת.ז זה שדה חובה";
   } else if (!id_pattern.test(values.customersId)) {
@@ -32,6 +33,7 @@ function OrderValidation(values) {
   } else if (values.customersId <= 0) {
     errors.customersId = "ת.ז לא יכולה להיות שלילית או אפס";
   }
+  //supplier id validation
   if (!values.supplierId) {
     errors.supplierId = "ת.ז זה שדה חובה";
   } else if (!id_pattern.test(values.supplierId)) {

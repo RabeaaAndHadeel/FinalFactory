@@ -1,34 +1,39 @@
 const BidValidation = (formData) => {
   let errors = {};
-  // Number validation
-  if (!formData.number.trim()) {
-    errors.number = "מספר הצעה הוא שדה חובה";
+
+  // Regular expression for 9 digits
+  const idPattern = /^\d{9}$/;
+
+  // Regular expression to ensure customerName contains only Hebrew letters
+  const hebrewPattern = /^[\u0590-\u05FF\s]+$/;
+
+  // idCustomer validation (must be 9 digits)
+  if (!formData.idCustomer.trim()) {
+    errors.idCustomer = "תעודת הזהות היא שדה חובה";
+  } else if (!idPattern.test(formData.idCustomer)) {
+    errors.idCustomer = "תעודת הזהות חייבת להיות מורכבת מ-9 ספרות";
   }
 
-  // CustomersId validation
-  if (!formData.customersId.trim()) {
-    errors.customersId = "תעודת הזהות היא שדה חובה";
+  // customerName validation (must be in Hebrew)
+  if (!formData.customerName.trim()) {
+    errors.customerName = "שם הלקוח הוא שדה חובה";
+  } else if (!hebrewPattern.test(formData.customerName)) {
+    errors.customerName = "שם הלקוח חייב להיות בעברית";
   }
 
-  // ProfileType validation
-  if (!formData.profileType.trim()) {
-    errors.profileType = "סוג פרופיל הוא שדה חובה";
+  // Discount validation (optional)
+  if (formData.discount && parseFloat(formData.discount) < 0) {
+    errors.discount = "הנחה לא יכולה להיות ערך שלילי";
   }
 
-  // VAT validation
-  if (!formData.VAT.trim()) {
-    errors.VAT = "מע'מ הוא שדה חובה";
-  } else if (parseFloat(formData.VAT) < 0) {
-    errors.VAT = "מע'מ לא יכול להיות ערך שלילי";
+  // TotalPrice validation
+  if (!formData.totalPrice.trim()) {
+    errors.totalPrice = "סכום כולל הוא שדה חובה";
+  } else if (parseFloat(formData.totalPrice) < 0) {
+    errors.totalPrice = "סכום כולל לא יכול להיות ערך שלילי";
   }
 
-  // Total validation
-  if (!formData.total.trim()) {
-    errors.total = "סך הכל הוא שדה חובה";
-  } else if (parseFloat(formData.total) < 0) {
-    errors.total = "סך הכל לא יכול להיות ערך שלילי";
-  }
-
+  // Date validation
   if (!formData.date) {
     errors.date = "תאריך הוא חובה";
   } else {
@@ -40,5 +45,4 @@ const BidValidation = (formData) => {
   }
   return errors;
 };
-
 export default BidValidation;

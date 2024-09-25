@@ -35,6 +35,16 @@ function ProfileValidation(values) {
     errors.weight = "משקל צריך להיות מספר בין 50 ל-300";
   } else if (values.weight < 0) errors.weight = "משקל לא יכול להיות שלילי";
 
+  // Check if the profile price field is empty or not numeric or outside the range
+  if (values.price === "") {
+    errors.price = "מחיר זה שדה חובה";
+  }  else if (values.price < 0) errors.price = "מחיר לא יכול להיות שלילי";
+  
+  // Check if the profile price field is empty or not numeric or outside the range
+  if (values.priceShutters === "") {
+    errors.priceShutters = "מחיר תריס זה שדה חובה";
+  }  else if (values.priceShutters < 0) errors.priceShutters = "מחיר תריס לא יכול להיות שלילי";
+  
   return errors; // Return the errors object
 }
 

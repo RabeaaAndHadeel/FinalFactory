@@ -9,12 +9,13 @@ function CustomerValidation(values) {
   const commonErrors = Common_validation1(values);
   errors = { ...errors, ...commonErrors };
 
+  //family name validation
   if (!values.family) {
     errors.family = "שם משפחה זה שדה חובה";
   } else if (!familyname_pattern.test(values.family)) {
     errors.family = "שם המשפחה צריך להיות בנוי רק מאותיות עבריות ורווחים";
   }
-
+//address validation
   if (!values.address) {
     errors.address = "כתובת זה שדה חובה";
   } else if (!address_pattern.test(values.address)) {
